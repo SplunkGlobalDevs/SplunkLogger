@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace Splunk
 {
-    class BatchManager
+    public class BatchManager
     {
         ConcurrentBag<object> events;
         bool isDisposed;
