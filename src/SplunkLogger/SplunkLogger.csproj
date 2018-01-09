@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ReleaseVersion>1.0.0</ReleaseVersion>
+    <Description>Splunk ILogger Compatible Library</Description>
+    <RootNamespace>Splunk</RootNamespace>
+  </PropertyGroup>
+
+</Project>
