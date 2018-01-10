@@ -2,7 +2,7 @@
 namespace Splunk
 {
     /// <summary>
-    /// Class used at HEC Json logger to store a log entry.
+    /// This class represents a HEC Json log entry.
     /// </summary>
     public class SplunkJSONEntry
     {

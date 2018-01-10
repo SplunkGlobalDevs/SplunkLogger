@@ -7,7 +7,7 @@ using System.Net.Sockets;
 namespace Splunk.Providers
 {
     /// <summary>
-    /// Class used to provide Splunk Socket Udp logger.
+    /// This class is used to provide a Splunk Socket Udp logger for each categoryName.
     /// </summary>
     public class SplunkUdpLoggerProvider : ILoggerProvider
     {

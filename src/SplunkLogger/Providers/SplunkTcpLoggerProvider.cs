@@ -7,7 +7,7 @@ using System.Net.Sockets;
 namespace Splunk.Providers
 {
     /// <summary>
-    /// Class used to provide Splunk Socket Tcp logger.
+    /// This class is used to provide a Splunk Socket Tcp logger for each categoryName.
     /// </summary>
     public class SplunkTcpLoggerProvider : ILoggerProvider
     {
