@@ -7,8 +7,13 @@ using System.Timers;
 namespace Splunk
 {
     /// <summary>
-    /// Class used at HEC loggers to control batch process.
+    /// This class contains all methods and logics necessary to control a batch process.
     /// </summary>
+    /// <remarks>
+    /// Batch process is necessary to improve Splunk HEC performance. You need to dose
+    /// your own batch size and/or interval speed but it's much better than send
+    /// individual POST for each log entry.
+    /// </remarks>
     public class BatchManager
     {
         readonly ConcurrentBag<object> events;

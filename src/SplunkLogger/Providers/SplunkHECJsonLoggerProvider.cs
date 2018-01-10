@@ -13,7 +13,7 @@ using Splunk.Loggers;
 namespace Splunk.Providers
 {
     /// <summary>
-    /// Class used to provide Splunk HEC Json logger.
+    /// This class is used to provide a Splunk HEC Json logger for each categoryName.
     /// </summary>
     public class SplunkHECJsonLoggerProvider : ILoggerProvider
     {

@@ -11,7 +11,7 @@ using Splunk.Loggers;
 namespace Splunk.Providers
 {
     /// <summary>
-    /// Class used to provide Splunk HEC Raw logger.
+    /// This class is used to provide a Splunk HEC Raw logger for each categoryName.
     /// </summary>
     public class SplunkHECRawLoggerProvider : ILoggerProvider
     {
