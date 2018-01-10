@@ -5,7 +5,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using Splunk;
 
-namespace VTEX.SampleWebAPI.Logging
+namespace Vtex.SplunkLogger
 {
     /// <summary>
     /// This class contains all methods to format a Log event into a VTEX standard text.

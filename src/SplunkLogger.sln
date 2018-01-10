@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplunkLogger", "SplunkLogge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebAPI", "SampleWebAPI\SampleWebAPI.csproj", "{8D6EF394-5E88-4D15-97C0-FF2860DF53F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTEXSplunkLogger", "VTEXSplunkLogger\VTEXSplunkLogger.csproj", "{4C4CFC3E-D748-4A81-ADC9-55B4F0ED1C69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{8D6EF394-5E88-4D15-97C0-FF2860DF53F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D6EF394-5E88-4D15-97C0-FF2860DF53F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D6EF394-5E88-4D15-97C0-FF2860DF53F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C4CFC3E-D748-4A81-ADC9-55B4F0ED1C69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4CFC3E-D748-4A81-ADC9-55B4F0ED1C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4CFC3E-D748-4A81-ADC9-55B4F0ED1C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4CFC3E-D748-4A81-ADC9-55B4F0ED1C69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = C# .Net Core 2 Splunk ILogger Compatible Implementation

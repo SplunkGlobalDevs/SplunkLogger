@@ -3,10 +3,10 @@ using Splunk.Providers;
 using Splunk.Configurations;
 using Splunk;
 
-namespace VTEX.SampleWebAPI
+namespace Vtex.SplunkLogger
 {
     /// <summary>
-    /// 
+    /// This class contains ILoggerFactory extension method to simplify the process to add a Splunk logger provider.
     /// </summary>
     public static class LoggerFactoryExtensions
     {

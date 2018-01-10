@@ -1,5 +1,5 @@
 ﻿
-namespace VTEX.SampleWebAPI.Logging
+namespace Vtex.SplunkLogger
 {
     /// <summary>
     /// This enumeration represents the log event levels defined at VTEX.

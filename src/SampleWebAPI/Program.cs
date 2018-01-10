@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace VTEX.SampleWebAPI
+namespace Vtex.SampleWebAPI
 {
     public class Program
     {

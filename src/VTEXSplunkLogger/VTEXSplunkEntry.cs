@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VTEX.SampleWebAPI.Logging
+namespace Vtex.SplunkLogger
 {
     /// <summary>
     /// This class represents a VTEX log entry.

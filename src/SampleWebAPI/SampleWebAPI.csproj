@@ -4,12 +4,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <ReleaseVersion>1.0.1</ReleaseVersion>
     <Description>Sample Web API project created to show how to use SplunkLogger library</Description>
-    <RootNamespace>VTEX.SampleWebAPI</RootNamespace>
+    <RootNamespace>Vtex.SampleWebAPI</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
-    <Folder Include="Logging\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,5 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SplunkLogger\SplunkLogger.csproj" />
+    <ProjectReference Include="..\VTEXSplunkLogger\VTEXSplunkLogger.csproj" />
   </ItemGroup>
 </Project>
