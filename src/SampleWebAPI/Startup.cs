@@ -14,22 +14,30 @@ namespace VTEX.SampleWebAPI
 {
     public class Startup
     {
-        static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion, GetHost());
+        static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter();
+
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <returns>The configure.</returns>
+        /// <param name="app">App.</param>
+        /// <param name="env">Env.</param>
+        /// <param name="loggerFactory">Logger factory.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddDebug();
@@ -48,48 +56,25 @@ namespace VTEX.SampleWebAPI
                 }
             };
 
-            //loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, null);
-            loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, formatter);
+            /**************************** Define Your Logger ****************************/
+            /*                                                                          */
+            //loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, null);           //
+            loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, formatter);        //
 
-            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, null);
-            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, formatter);
+            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, null);          //
+            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, formatter);     //
 
-            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, null);
-            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, formatter);
+            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, null);              //
+            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, formatter);         //
 
             //loggerFactory.AddUdpSplunkLogger(splunkConfiguration, null);
             //loggerFactory.AddUdpSplunkLogger(splunkConfiguration, formatter);
+            /*                                                                          */
+            /**************************** Define Your Logger ****************************/
 
             app.UseMvc();
         }
 
-        /// <summary>
-        /// Method created to get AWS EC2 host Id, or set `dev` as host if AWS internal call fails.
-        /// </summary>
-        static string GetHost()
-        {
-            string host = string.Empty;
-            try
-            {
-                using (HttpClient httpClient = new HttpClient())
-                {
-                    TimeSpan timeSpan = new TimeSpan(0, 0, 5);
-                    var cancellationTokenSource = new CancellationTokenSource((int)timeSpan.TotalMilliseconds);
-                    httpClient.Timeout = timeSpan;
-                    httpClient.BaseAddress = new Uri("http://169.254.169.254/latest/meta-data/");
-                    host = httpClient
-                        .GetAsync("instance-id", cancellationTokenSource.Token)
-                        .Result
-                        .Content
-                        .ReadAsStringAsync()
-                        .Result;
-                }
-            }
-            catch
-            {
-                host = "dev";
-            }
-            return host;
-        }
+
     }
 }
