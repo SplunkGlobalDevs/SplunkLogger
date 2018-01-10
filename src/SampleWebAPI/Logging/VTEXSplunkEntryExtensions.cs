@@ -4,10 +4,23 @@ using VTEX.SampleWebAPI.Logging;
 
 namespace VTEX.SampleWebAPI
 {
+    /// <summary>
+    /// This class contains ILogger extension method to simplify the process to record a VTEX log.
+    /// </summary>
     public static class VTEXSplunkEntryExtensions
     {
         static readonly EventId EmptyEventId = new EventId();
 
+        /// <summary>
+        /// Log to Splunk.
+        /// </summary>
+        /// <param name="logger">Logger.</param>
+        /// <param name="logLevel">Log level.</param>
+        /// <param name="workflowType">Workflow type.</param>
+        /// <param name="workflowInstance">Workflow instance.</param>
+        /// <param name="account">Account.</param>
+        /// <param name="exception">Exception.</param>
+        /// <param name="extraParameters">Extra parameters.</param>
         public static void DefineVTEXLog(this ILogger logger, LogLevel logLevel, string workflowType, string workflowInstance, string account = "", Exception exception = null, params Tuple<string, string>[] extraParameters)
         {
             string formattedMessage = string.Empty;
