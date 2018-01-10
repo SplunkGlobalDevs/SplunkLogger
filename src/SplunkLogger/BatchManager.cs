@@ -6,16 +6,26 @@ using System.Timers;
 
 namespace Splunk
 {
+    /// <summary>
+    /// Class used at HEC loggers to control batch process.
+    /// </summary>
     public class BatchManager
     {
-        ConcurrentBag<object> events;
+        readonly ConcurrentBag<object> events;
+        readonly uint batchSizeCount;
+        readonly uint batchIntervalInMiliseconds;
+        readonly Timer timer;
+        readonly Action<List<object>> emitAction;
+
         bool isDisposed;
         bool isDisposing;
-        uint batchSizeCount;
-        uint batchIntervalInMiliseconds;
-        Timer timer;
-        Action<List<object>> emitAction;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Splunk.BatchManager"/> class.
+        /// </summary>
+        /// <param name="batchSizeCount">Batch size count.</param>
+        /// <param name="batchIntervalInMiliseconds">Batch interval in miliseconds.</param>
+        /// <param name="emitAction">Emit action to be invoked at Emit process.</param>
         public BatchManager(uint batchSizeCount, uint batchIntervalInMiliseconds, Action<List<object>> emitAction)
         {
             events = new ConcurrentBag<object>();
@@ -69,6 +79,10 @@ namespace Splunk
                 emitAction?.Invoke(emitEvents);
         }
 
+        /// <summary>
+        /// Add the specified item for futher batch emit process.
+        /// </summary>
+        /// <param name="item">Item to be added for next batch emit process.</param>
         public void Add(object item)
         {
             if (!isDisposed && !isDisposing)
@@ -79,6 +93,14 @@ namespace Splunk
             }
         }
 
+        /// <summary>
+        /// Releases all resource used by the <see cref="T:Splunk.BatchManager"/> object.
+        /// </summary>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="T:Splunk.BatchManager"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="T:Splunk.BatchManager"/> in an unusable state. After
+        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="T:Splunk.BatchManager"/> so
+        /// the garbage collector can reclaim the memory that the <see cref="T:Splunk.BatchManager"/> was occupying.
+        /// </remarks>
         public void Dispose()
         {
             if (!isDisposed)
