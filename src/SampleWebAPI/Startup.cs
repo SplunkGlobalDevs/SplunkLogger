@@ -1,14 +1,21 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Net.Http;
+using System.Threading;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Splunk;
 using Splunk.Configurations;
+using VTEX.SampleWebAPI.Logging;
 
 namespace VTEX.SampleWebAPI
 {
     public class Startup
     {
+        static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion, GetHost());
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -42,6 +49,35 @@ namespace VTEX.SampleWebAPI
             };
 
             app.UseMvc();
+        }
+
+        /// <summary>
+        /// Method created to get AWS EC2 host Id, or set `dev` as host if AWS internal call fails.
+        /// </summary>
+        static string GetHost()
+        {
+            string host = string.Empty;
+            try
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    TimeSpan timeSpan = new TimeSpan(0, 0, 5);
+                    var cancellationTokenSource = new CancellationTokenSource((int)timeSpan.TotalMilliseconds);
+                    httpClient.Timeout = timeSpan;
+                    httpClient.BaseAddress = new Uri("http://169.254.169.254/latest/meta-data/");
+                    host = httpClient
+                        .GetAsync("instance-id", cancellationTokenSource.Token)
+                        .Result
+                        .Content
+                        .ReadAsStringAsync()
+                        .Result;
+                }
+            }
+            catch
+            {
+                host = "dev";
+            }
+            return host;
         }
     }
 }
