@@ -2,20 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ReleaseVersion>1.0.0</ReleaseVersion>
+    <ReleaseVersion>1.0.1</ReleaseVersion>
+    <Version>1.0.1</Version>
     <Description>Splunk .Net Core ILogger Compatible Library</Description>
     <RootNamespace>Splunk</RootNamespace>
     <Authors>Fábio Caldas</Authors>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Owners>VTEX</Owners>
-    <PackageProjectUrl>https://github.com/Caldas/SplunkLogger</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Caldas/SplunkLogger/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/vtex/SplunkLogger</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/vtex/SplunkLogger/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>splunk logger dotnet core VTEX</PackageTags>
     <Title>Splunk .Net Core ILogger Implementation</Title>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>SplunkLogger</PackageId>
     <Copyright>VTEX @ 2018</Copyright>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIconUrl>https://raw.githubusercontent.com/vtex/SplunkLogger/master/VTEX_icon.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
