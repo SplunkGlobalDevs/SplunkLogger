@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using VTEX.SampleWebAPI.Logging;
+using Vtex.SplunkLogger;
 
-namespace VTEX.SampleWebAPI
+namespace Vtex
 {
     /// <summary>
     /// This class contains ILogger extension method to simplify the process to record a VTEX log.
     /// </summary>
-    public static class VTEXSplunkEntryExtensions
+    public static class ILoggerExtensions
     {
         static readonly EventId EmptyEventId = new EventId();
 
