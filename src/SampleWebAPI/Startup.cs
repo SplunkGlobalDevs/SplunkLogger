@@ -48,6 +48,18 @@ namespace VTEX.SampleWebAPI
                 }
             };
 
+            //loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, null);
+            loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, formatter);
+
+            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, null);
+            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, formatter);
+
+            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, null);
+            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, formatter);
+
+            //loggerFactory.AddUdpSplunkLogger(splunkConfiguration, null);
+            //loggerFactory.AddUdpSplunkLogger(splunkConfiguration, formatter);
+
             app.UseMvc();
         }
 
