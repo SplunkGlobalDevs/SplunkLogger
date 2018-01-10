@@ -1,16 +1,13 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Splunk;
 using Splunk.Configurations;
-using VTEX.SampleWebAPI.Logging;
+using Vtex.SplunkLogger;
 
-namespace VTEX.SampleWebAPI
+namespace Vtex.SampleWebAPI
 {
     public class Startup
     {
@@ -74,7 +71,5 @@ namespace VTEX.SampleWebAPI
 
             app.UseMvc();
         }
-
-
     }
 }
