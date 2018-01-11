@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -89,7 +90,15 @@ namespace Splunk.Providers
             var jArray = events.Select(evt => JsonConvert.SerializeObject(evt, Formatting.None));
             var formatedMessage = string.Join(" ", jArray);
             var stringContent = new StringContent(formatedMessage, Encoding.UTF8, "application/json");
-            httpClient.PostAsync(string.Empty, stringContent);
+            httpClient.PostAsync(string.Empty, stringContent)
+                      .ContinueWith(task => {
+                          if (task.IsCompletedSuccessfully)
+                              Debug.WriteLine("Splunk HEC RAW Status: Sucess");
+                          else if (task.IsCanceled)
+                              Debug.WriteLine("Splunk HEC RAW Status: Canceled");
+                          else
+                              Debug.WriteLine("Splunk HEC RAW Status: Error " + task.Exception != null ? task.Exception.ToString() : "");
+                      });
         }
     }
 }

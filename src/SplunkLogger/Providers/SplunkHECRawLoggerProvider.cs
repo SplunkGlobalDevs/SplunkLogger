@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Collections.Concurrent;
 using Splunk.Configurations;
 using Splunk.Loggers;
 
@@ -86,7 +87,15 @@ namespace Splunk.Providers
         {
             var formatedMessage = string.Join(Environment.NewLine, events.Select(evt => evt.ToString()));
             var stringContent = new StringContent(formatedMessage);
-            httpClient.PostAsync(string.Empty, stringContent);
+            httpClient.PostAsync(string.Empty, stringContent)
+                      .ContinueWith(task => {
+                          if (task.IsCompletedSuccessfully)
+                              Debug.WriteLine("Splunk HEC RAW Status: Sucess");
+                          else if (task.IsCanceled)
+                              Debug.WriteLine("Splunk HEC RAW Status: Canceled");
+                          else
+                              Debug.WriteLine("Splunk HEC RAW Status: Error " + task.Exception != null ? task.Exception.ToString() : "");
+                      });
         }
     }
 }
