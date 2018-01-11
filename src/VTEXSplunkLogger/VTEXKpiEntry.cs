@@ -8,6 +8,11 @@ namespace Vtex.SplunkLogger
     public class VTEXKpiEntry
     {
         /// <summary>
+        /// Application name.
+        /// </summary>
+        public string Application { get; private set; }
+
+        /// <summary>
         /// For which account this kpi happened.
         /// </summary>
         public string Account { get; internal set; }
@@ -47,9 +52,10 @@ namespace Vtex.SplunkLogger
         /// </summary>
         public float Value { get; internal set; }
 
-        internal VTEXKpiEntry(string name)
+        internal VTEXKpiEntry(string application, string name)
         {
             ExtraParameters = new Dictionary<string, string>();
+            Application = application;
             Name = name;
         }
 
