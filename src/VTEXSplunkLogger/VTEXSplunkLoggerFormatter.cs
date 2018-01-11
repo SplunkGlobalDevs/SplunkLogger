@@ -53,9 +53,12 @@ namespace Vtex.SplunkLogger
                 string account = entry.Account;
                 if (string.IsNullOrWhiteSpace(entry.Account))
                     account = "-";
-                log = string.Format($"{DateTime.UtcNow.ToString(DateTimeFormat)} VTEXLog,splunkmanager,{host},{GetVTEXEventLevel(logLevel)},{GetVTEXLogType(logLevel)},\"{entry.WorkflowType}\",\"{entry.WorkflowInstance}\",{account},{appVersion} {extraData}");
+                string evidence = string.Empty;
+                if (!string.IsNullOrWhiteSpace(entry.Evidence))
+                    evidence = $"evidence={entry.Evidence} ";
+                log = string.Format($"{DateTime.UtcNow.ToString(DateTimeFormat)} VTEXLog,{entry.Application},{host},{GetVTEXEventLevel(logLevel)},{GetVTEXLogType(logLevel)},\"{entry.WorkflowType}\",\"{entry.WorkflowInstance}\",{account},{appVersion} {evidence}{extraData}");
             }
-            if(state is VTEXKpiEntry)
+            else if(state is VTEXKpiEntry)
             {
                 var entry = state as VTEXKpiEntry;
 
@@ -66,7 +69,7 @@ namespace Vtex.SplunkLogger
                 if (string.IsNullOrWhiteSpace(entry.Account))
                     account = "-";
                 
-                log = string.Format($"{DateTime.UtcNow.RemoveSecondMiliSecond().ToString(DateTimeFormat)} VTEXKpi,splunkmanager,{host},{GetVTEXEventLevel(logLevel)},\"{entry.Name}\",{entry.Sum},{entry.Count},{entry.Min},{entry.Max},{account},{appVersion} {extraData}");
+                log = string.Format($"{DateTime.UtcNow.RemoveSecondMiliSecond().ToString(DateTimeFormat)} VTEXKpi,{entry.Application},{host},{GetVTEXEventLevel(logLevel)},\"{entry.Name}\",{entry.Sum},{entry.Count},{entry.Min},{entry.Max},{account},{appVersion} {extraData}");
             }
             else
             {

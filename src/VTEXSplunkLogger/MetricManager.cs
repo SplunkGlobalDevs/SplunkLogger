@@ -64,13 +64,20 @@ namespace Vtex.SplunkLogger
 
         #region [ Internal Methods ]
 
-        internal void RegisterKpi(string kpiName, float kpiValue, string account = "", params Tuple<string, string>[] extraParameters)
+        internal void RegisterKpi(string application, string kpiName, float kpiValue, string account = "", params Tuple<string, string>[] extraParameters)
         {
+            if (string.IsNullOrWhiteSpace(application))
+                throw new ArgumentNullException(nameof(application));
 
+            if (string.IsNullOrWhiteSpace(kpiName))
+                throw new ArgumentNullException(nameof(kpiName));
+            
             var extraFields = new Dictionary<string, string>();
 
             if (extraParameters != null && extraParameters.Length > 0)
                 extraParameters.ToList().ForEach(tuple => extraFields.Add(tuple.Item1, tuple.Item2));
+
+            extraFields.Add("application", application);
 
             if (!string.IsNullOrWhiteSpace(account))
                 extraFields.Add("account", account); 
@@ -148,28 +155,34 @@ namespace Vtex.SplunkLogger
             string metricName = string.Empty;
             Dictionary<string, string> extraFields = null;
             RetreiveKeyItems(key, out metricName, out extraFields);
+            var account = "";
+            var application = "";
 
-            VTEXKpiEntry entry = new VTEXKpiEntry(metricName)
+            if (extraFields != null && extraFields.Count > 0)
+            {
+                if (extraFields.ContainsKey("application"))
+                {
+                    application = extraFields["application"];
+                    extraFields.Remove("application");
+                }
+
+                if (extraFields.ContainsKey("account"))
+                {
+                    account = extraFields["account"];
+                    extraFields.Remove("account");
+                }
+            }
+
+            return new VTEXKpiEntry(application, metricName)
             {
                 Count = valueTuple.Item1,
                 Name = metricName,
                 Sum = valueTuple.Item2,
                 Max = maxValue,
-                Min = minValue
+                Min = minValue,
+                Account = account,
+                ExtraParameters = extraFields
             };
-
-            if (extraFields != null && extraFields.Count > 0)
-            {
-                if (extraFields.ContainsKey("account"))
-                {
-                    entry.Account = extraFields["account"];
-                    extraFields.Remove("account");
-                }
-            }
-
-            entry.ExtraParameters = extraFields;
-
-            return entry;
         }
 
         void RetreiveKeyItems(string key, out string metricName, out Dictionary<string, string> customFields)

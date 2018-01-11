@@ -9,6 +9,11 @@ namespace Vtex.SplunkLogger
     public class VTEXLogEntry
     {
         /// <summary>
+        /// Application name.
+        /// </summary>
+        public string Application { get; private set; }
+
+        /// <summary>
         /// Workflow type is a VTEX concept almost similar as `{EventId.Name}` concept.
         /// </summary>
         public string WorkflowType { get; private set; }
@@ -24,25 +29,29 @@ namespace Vtex.SplunkLogger
         public string Account { get; private set; }
 
         /// <summary>
-        /// Exception to be logged.
-        /// </summary>
-        public Exception Exception { get; private set; }
-
-        /// <summary>
         /// Extra parameters that will be represented as `{Key}="{Value}"` entries at Splunk text message.
         /// </summary>
         public List<Tuple<string, string>> ExtraParameters { get; private set; }
 
         /// <summary>
+        /// Evidence information.
+        /// </summary>
+        public string Evidence { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:VTEX.SampleWebAPI.Logging.VTEXLogEntry"/> class.
         /// </summary>
+        /// <param name="application">Application name.</param>
         /// <param name="workflowType">Workflow type.</param>
         /// <param name="workflowInstance">Workflow instance.</param>
         /// <param name="account">Account.</param>
-        /// <param name="exception">Exception.</param>
+        /// <param name="evidence">Evidence text.</param>
         /// <param name="extraParameters">Extra parameters.</param>
-        public VTEXLogEntry(string workflowType, string workflowInstance, string account = "", Exception exception = null, params Tuple<string, string>[] extraParameters)
+        public VTEXLogEntry(string application, string workflowType, string workflowInstance, string account = "", string evidence = "", params Tuple<string, string>[] extraParameters)
         {
+            if (string.IsNullOrWhiteSpace(application))
+                throw new ArgumentNullException(nameof(application));
+            
             if (string.IsNullOrWhiteSpace(workflowType))
                 throw new ArgumentNullException(nameof(workflowType));
 
@@ -50,16 +59,11 @@ namespace Vtex.SplunkLogger
                 throw new ArgumentNullException(nameof(workflowInstance));
 
             ExtraParameters = new List<Tuple<string, string>>(extraParameters);
+            Application = application;
             WorkflowType = workflowType;
             WorkflowInstance = workflowInstance;
             Account = account;
-            Exception = exception;
-
-            if (exception != null)
-            {
-                ExtraParameters.Add(new Tuple<string, string>("exception_type", exception.GetType().FullName));
-                ExtraParameters.Add(new Tuple<string, string>("exception_message", exception.Message));
-            }
+            Evidence = evidence;
         }
     }
 }

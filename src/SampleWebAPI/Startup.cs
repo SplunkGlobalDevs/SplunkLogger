@@ -37,6 +37,8 @@ namespace Vtex.SampleWebAPI
         /// <param name="loggerFactory">Logger factory.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            ILoggerExtensions.SetApplication("SplunkLoggerSampleWebAPI");
+
             loggerFactory.AddDebug();
 
             var splunkConfiguration = new SplunkLoggerConfiguration()
