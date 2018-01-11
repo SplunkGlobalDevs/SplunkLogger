@@ -40,7 +40,7 @@ namespace Splunk.Providers
             if (!splunkCollectorUrl.EndsWith("/", StringComparison.InvariantCulture))
                 splunkCollectorUrl += "/";
 
-            var baseAddress = new Uri(splunkCollectorUrl + "/raw?channel=" + Guid.NewGuid().ToString());
+            var baseAddress = new Uri(splunkCollectorUrl + "raw?channel=" + Guid.NewGuid().ToString());
             httpClient.BaseAddress = baseAddress;
 
             httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds);
