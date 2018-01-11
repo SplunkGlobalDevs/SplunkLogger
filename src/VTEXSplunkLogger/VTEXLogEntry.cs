@@ -6,7 +6,7 @@ namespace Vtex.SplunkLogger
     /// <summary>
     /// This class represents a VTEX log entry.
     /// </summary>
-    public class VTEXSplunkEntry
+    public class VTEXLogEntry
     {
         /// <summary>
         /// Workflow type is a VTEX concept almost similar as `{EventId.Name}` concept.
@@ -34,14 +34,14 @@ namespace Vtex.SplunkLogger
         public List<Tuple<string, string>> ExtraParameters { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:VTEX.SampleWebAPI.Logging.VTEXSplunkEntry"/> class.
+        /// Initializes a new instance of the <see cref="T:VTEX.SampleWebAPI.Logging.VTEXLogEntry"/> class.
         /// </summary>
         /// <param name="workflowType">Workflow type.</param>
         /// <param name="workflowInstance">Workflow instance.</param>
         /// <param name="account">Account.</param>
         /// <param name="exception">Exception.</param>
         /// <param name="extraParameters">Extra parameters.</param>
-        public VTEXSplunkEntry(string workflowType, string workflowInstance, string account = "", Exception exception = null, params Tuple<string, string>[] extraParameters)
+        public VTEXLogEntry(string workflowType, string workflowInstance, string account = "", Exception exception = null, params Tuple<string, string>[] extraParameters)
         {
             if (string.IsNullOrWhiteSpace(workflowType))
                 throw new ArgumentNullException(nameof(workflowType));

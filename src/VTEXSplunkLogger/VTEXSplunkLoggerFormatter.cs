@@ -32,7 +32,7 @@ namespace Vtex.SplunkLogger
         }
 
         /// <summary>
-        /// Format the specified logLevel, eventId, state and exception into log string entry.
+        /// Format the specified logLevel, eventId, state and exception into log text.
         /// </summary>
         /// <returns>Formatted log string.</returns>
         /// <param name="logLevel">Log level.</param>
@@ -43,17 +43,30 @@ namespace Vtex.SplunkLogger
         public string Format<T>(LogLevel logLevel, EventId eventId, T state, Exception exception)
         {
             string log;
-            if (state is VTEXSplunkEntry)
+            if (state is VTEXLogEntry)
             {
-                var splunkEntry = state as VTEXSplunkEntry;
-                var dateTime = DateTime.UtcNow.ToString(DateTimeFormat);
+                var entry = state as VTEXLogEntry;
+
                 string extraData = string.Empty;
-                if (splunkEntry.ExtraParameters != null && splunkEntry.ExtraParameters.Count > 0)
-                    extraData = string.Join(" ", splunkEntry.ExtraParameters.Select(part => { return $"{part.Item1}=\"{part.Item2}\""; }));
-                string account = splunkEntry.Account;
-                if (string.IsNullOrWhiteSpace(splunkEntry.Account))
+                if (entry.ExtraParameters != null && entry.ExtraParameters.Count > 0)
+                    extraData = string.Join(" ", entry.ExtraParameters.Select(part => { return $"{part.Item1}=\"{part.Item2}\""; }));
+                string account = entry.Account;
+                if (string.IsNullOrWhiteSpace(entry.Account))
                     account = "-";
-                log = string.Format($"{dateTime} VTEXLog,splunkmanager,{host},{GetVTEXEventLevel(logLevel)},{GetVTEXLogType(logLevel)},\"{splunkEntry.WorkflowType}\",\"{splunkEntry.WorkflowInstance}\",{account},{appVersion} {extraData}");
+                log = string.Format($"{DateTime.UtcNow.ToString(DateTimeFormat)} VTEXLog,splunkmanager,{host},{GetVTEXEventLevel(logLevel)},{GetVTEXLogType(logLevel)},\"{entry.WorkflowType}\",\"{entry.WorkflowInstance}\",{account},{appVersion} {extraData}");
+            }
+            if(state is VTEXKpiEntry)
+            {
+                var entry = state as VTEXKpiEntry;
+
+                string extraData = string.Empty;
+                if (entry.ExtraParameters != null && entry.ExtraParameters.Count > 0)
+                    extraData = string.Join(" ", entry.ExtraParameters.Select(part => { return $"{part.Key}=\"{part.Value}\""; }));
+                string account = entry.Account;
+                if (string.IsNullOrWhiteSpace(entry.Account))
+                    account = "-";
+                
+                log = string.Format($"{DateTime.UtcNow.RemoveSecondMiliSecond().ToString(DateTimeFormat)} VTEXKpi,splunkmanager,{host},{GetVTEXEventLevel(logLevel)},\"{entry.Name}\",{entry.Sum},{entry.Count},{entry.Min},{entry.Max},{account},{appVersion} {extraData}");
             }
             else
             {
