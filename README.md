@@ -9,9 +9,7 @@ It was developed to be integrated to .Net Core 2 logging abstractions.
 
 ### Features
 
-* ILoggerProviders (*SplunkHECJsonLoggerProvider*, *SplunkHECRawLoggerProvider*, *SplunkTcpLoggerProvider* and *SplunkUdpLoggerProvider*)
 * ILoggers (**HEC** (*Raw* and *Json*) and **Socket** (*TCP* and *UDP*)
-* Custom Configurations
 * Batch Manager class (Improve **Splunk** *HEC* performance sending data as batch)
 
 ## Usage
@@ -88,7 +86,7 @@ This project contains all **VTEX** extra classes designed to facilitate to log r
 
 After add *VTEXSplunkLogger* nuget library
 ```powershell
-PM> Install-Package VTEXSplunkLogger -Version 1.0.0 -Source https://www.myget.org/F/vtexlab/api/v3/index.json
+PM> Install-Package VTEXSplunkLogger -Source https://www.myget.org/F/vtexlab/api/v3/index.json
 ```
 
 You should initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
