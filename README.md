@@ -69,7 +69,7 @@ public class ValuesController : Controller
 # VTEXSplunkLogger
 For us at **VTEX** we need more customized log entries at Splunk and also we need easier ways to call for log registration during the code. For that, we created this *VTEXSplunkLogger* library.
 
-This project contains all **VTEX** extra classes designed ease logging. All classes changes .Net Core 2 log abstraction to a customized log entry at **Splunk**
+This project contains all **VTEX** extra classes designed to ease logging. All classes changes .Net Core 2 log abstraction to a customized log entry at **Splunk**
 
 | Package Name                   | Release |
 |--------------------------------|-----------------|
