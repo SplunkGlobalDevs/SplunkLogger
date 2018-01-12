@@ -9,17 +9,17 @@ It was developed to be integrated to .Net Core 2 logging abstractions.
 
 ### Features
 
-* ILoggers (**HEC** (*Raw* and *Json*) and **Socket** (*TCP* and *UDP*)
+* ILoggers **HEC** (*Raw* and *Json*) and **Socket** (*TCP* and *UDP*)
 * Batch Manager class (Improve **Splunk** *HEC* performance sending data as batch)
 
 ## Usage
 
-After add *SplunkLogger* nuget library
+Add *SplunkLogger* nuget library
 ```powershell
 PM> Install-Package SplunkLogger
 ```
 
-You should initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
+Initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
 
 ```csharp
 static readonly ILoggerFormatter formatter = null;
@@ -39,9 +39,9 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 }
 ```
 
-In this case above we added a **Splunk** *HEC Raw* logger without any custom formmater as log provider.
+The case above is using a **Splunk** *HEC Raw* logger without any custom formatter as log provider.
 
-Now in your controller you can log normally, for instance:
+Now, in your controller you can log normally, for instance:
 
 ```csharp
 [Route("api/[controller]")]
@@ -67,9 +67,9 @@ public class ValuesController : Controller
 -------------------------------------------
 
 # VTEXSplunkLogger
-For us at **VTEX** we need more customized log entries at Splunk and also we need easier ways to call for log registration during the code and for that we created this *VTEXSplunkLogger* library.
+For us at **VTEX** we need more customized log entries at Splunk and also we need easier ways to call for log registration during the code. For that, we created this *VTEXSplunkLogger* library.
 
-This project contains all **VTEX** extra classes designed to facilitate to log registration and also, all classes to customize .Net Core 2 log abstraction to a customized log entry at **Splunk**
+This project contains all **VTEX** extra classes designed ease logging. All classes changes .Net Core 2 log abstraction to a customized log entry at **Splunk**
 
 | Package Name                   | Release |
 |--------------------------------|-----------------|
@@ -79,17 +79,17 @@ This project contains all **VTEX** extra classes designed to facilitate to log r
 
 * ILoggerExtensions (*Allow easy log creation*)
 * LoggerFactoryExtensions (*Simplify loggerFactory add provider method call*)
-* VTEXSplunkLoggerFormatter (*Custom `ILoggerFormatter` responsable for create VTEX custom text to Splunk*)
+* VTEXSplunkLoggerFormatter (*Custom `ILoggerFormatter` which creates VTEX's custom text to Splunk*)
 
 
 ## Usage
 
-After add *VTEXSplunkLogger* nuget library
+Add *VTEXSplunkLogger* nuget library
 ```powershell
 PM> Install-Package VTEXSplunkLogger -Source https://www.myget.org/F/vtexlab/api/v3/index.json
 ```
 
-You should initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
+Initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
 
 ```csharp
 static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter();
@@ -111,7 +111,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 
 ```csharp
 using Vtex;
-//other usings ..
+// other usings ..
 
 [Route("api/[controller]")]
 public class ValuesController : Controller
