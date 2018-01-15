@@ -96,6 +96,9 @@ static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter();
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
+    //TODO: Set your project name
+    ILoggerExtensions.SetApplication("ProjectX"); 
+    
     var splunkConfiguration = new SplunkLoggerConfiguration()
     {
         HecConfiguration = new HECConfiguration()
