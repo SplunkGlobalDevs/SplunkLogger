@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Splunk.Configurations;
 using Splunk.Loggers;
@@ -14,10 +13,9 @@ namespace Splunk.Providers
     /// <summary>
     /// This class is used to provide a Splunk HEC Raw logger for each categoryName.
     /// </summary>
-    public class SplunkHECRawLoggerProvider : ILoggerProvider
+    public class SplunkHECRawLoggerProvider : SplunkHECBaseProvider, ILoggerProvider
     {
         readonly BatchManager batchManager;
-        readonly HttpClient httpClient;
         readonly LogLevel threshold;
         readonly ILoggerFormatter loggerFormatter;
         readonly ConcurrentDictionary<string, ILogger> loggers;
@@ -35,30 +33,9 @@ namespace Splunk.Providers
 
             this.loggerFormatter = loggerFormatter;
 
-            httpClient = new HttpClient();
-
-            var splunkCollectorUrl = configuration.HecConfiguration.SplunkCollectorUrl;
-            if (!splunkCollectorUrl.EndsWith("/", StringComparison.InvariantCulture))
-                splunkCollectorUrl += "/";
-            
-            if(configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.QueryString)
-                splunkCollectorUrl = splunkCollectorUrl + "raw?channel=" + Guid.NewGuid().ToString();
-            
-            httpClient.BaseAddress = new Uri(splunkCollectorUrl);
-
-            httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds);
-
-            if(!configuration.HecConfiguration.UseTokenAsQueryString)
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
-            if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
-                httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
+            SetupHttpClient(configuration, "raw");
 
             batchManager = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMiliseconds, Emit);
-        }
-
-        ILogger CreateLoggerInstance(string categoryName)
-        {
-            return new HECRawLogger(categoryName, threshold, httpClient, batchManager, loggerFormatter);
         }
 
         /// <summary>
@@ -66,7 +43,7 @@ namespace Splunk.Providers
         /// </summary>
         /// <returns><see cref="T:Splunk.Loggers.HECRawLogger"/> instance.</returns>
         /// <param name="categoryName">Category name.</param>
-        public ILogger CreateLogger(string categoryName)
+        public override ILogger CreateLogger(string categoryName)
         {
             return loggers.GetOrAdd(categoryName, CreateLoggerInstance(categoryName));
         }
@@ -80,9 +57,19 @@ namespace Splunk.Providers
         /// <see cref="Dispose"/>, you must release all references to the
         /// <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/> so the garbage collector can reclaim the memory
         /// that the <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/> was occupying.</remarks>
-        public void Dispose()
+        public override void Dispose()
         {
             loggers.Clear();
+        }
+
+        /// <summary>
+        /// Create a <see cref="T:Splunk.Loggers.HECRawLogger"/> instance to the category name provided.
+        /// </summary>
+        /// <returns><see cref="T:Splunk.Loggers.HECRawLogger"/> instance.</returns>
+        /// <param name="categoryName">Category name.</param>
+        public override ILogger CreateLoggerInstance(string categoryName)
+        {
+            return new HECRawLogger(categoryName, threshold, httpClient, batchManager, loggerFormatter);
         }
 
         /// <summary>

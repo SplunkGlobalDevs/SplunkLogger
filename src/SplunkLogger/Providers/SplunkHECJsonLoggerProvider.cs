@@ -16,10 +16,9 @@ namespace Splunk.Providers
     /// <summary>
     /// This class is used to provide a Splunk HEC Json logger for each categoryName.
     /// </summary>
-    public class SplunkHECJsonLoggerProvider : ILoggerProvider
+    public class SplunkHECJsonLoggerProvider : SplunkHECBaseProvider, ILoggerProvider
     {
         readonly BatchManager batchController;
-        readonly HttpClient httpClient;
         readonly LogLevel threshold;
         readonly ILoggerFormatter loggerFormatter;
         readonly ConcurrentDictionary<string, ILogger> loggers;
@@ -37,34 +36,17 @@ namespace Splunk.Providers
 
             this.loggerFormatter = loggerFormatter;
 
-            httpClient = new HttpClient();
-
-            var splunkCollectorUrl = configuration.HecConfiguration.SplunkCollectorUrl;
-            if (!splunkCollectorUrl.EndsWith("/", StringComparison.InvariantCulture))
-                splunkCollectorUrl += "/";
-
-            var baseAddress = new Uri(splunkCollectorUrl + "event");
-            httpClient.BaseAddress = baseAddress;
-
-            httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
-            if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
-                httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
+            SetupHttpClient(configuration, "event");
 
             batchController = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMiliseconds, Emit);
         }
 
-        ILogger CreateLoggerInstance(string categoryName)
-        {
-            return new HECJsonLogger(categoryName, threshold, httpClient, batchController, loggerFormatter);
-        }
-
         /// <summary>
-        /// Create a <see cref="T:Splunk.Loggers.HECJsonLogger"/> instance to the category name provided.
+        /// Get a <see cref="T:Splunk.Loggers.HECJsonLogger"/> instance to the category name provided.
         /// </summary>
         /// <returns><see cref="T:Splunk.Loggers.HECJsonLogger"/> instance.</returns>
         /// <param name="categoryName">Category name.</param>
-        public ILogger CreateLogger(string categoryName)
+        public override ILogger CreateLogger(string categoryName)
         {
             return loggers.GetOrAdd(categoryName, CreateLoggerInstance(categoryName));
         }
@@ -78,9 +60,19 @@ namespace Splunk.Providers
         /// <see cref="Dispose"/>, you must release all references to the
         /// <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> so the garbage collector can reclaim the memory
         /// that the <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> was occupying.</remarks>
-        public void Dispose()
+        public override void Dispose()
         {
             loggers.Clear();
+        }
+
+        /// <summary>
+        /// Create a <see cref="T:Splunk.Loggers.HECJsonLogger"/> instance to the category name provided.
+        /// </summary>
+        /// <returns>The logger instance.</returns>
+        /// <param name="categoryName">Category name.</param>
+        public override ILogger CreateLoggerInstance(string categoryName)
+        {
+            return new HECJsonLogger(categoryName, threshold, httpClient, batchController, loggerFormatter);
         }
 
         /// <summary>
