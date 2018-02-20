@@ -36,7 +36,7 @@ namespace Splunk.Configurations
         /// <summary>
         /// Gets or sets indication to use or not hec token autentication at query string
         /// </summary>
-        public bool UseTokenAsQueryString { get; set; }
+        public bool UseAuthTokenAsQueryString { get; set; }
 
         /// <summary>
         /// Gets or sets indication to use or not channel identification when using raw endpoint
