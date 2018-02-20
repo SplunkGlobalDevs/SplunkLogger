@@ -6,6 +6,13 @@ namespace Splunk.Configurations
     /// </summary>
     public class HECConfiguration
     {
+        public enum ChannelIdOption
+        {
+            None,
+            QueryString,
+            RequestHeader
+        }
+
         /// <summary>
         /// Gets or sets the batch interval in miliseconds.
         /// </summary>
@@ -25,6 +32,16 @@ namespace Splunk.Configurations
         /// Gets or sets the splunk collector URL.
         /// </summary>
         public string SplunkCollectorUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets indication to use or not hec token autentication at query string
+        /// </summary>
+        public bool UseAuthTokenAsQueryString { get; set; }
+
+        /// <summary>
+        /// Gets or sets indication to use or not channel identification when using raw endpoint
+        /// </summary>
+        public ChannelIdOption ChannelIdType { get; set; } = ChannelIdOption.None;
 
         /// <summary>
         /// Gets or sets the token.

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Splunk.Providers;
 using Splunk.Configurations;
-using Splunk;
 
-namespace Vtex
+namespace Splunk
 {
     /// <summary>
     /// This class contains ILoggerFactory extension method to simplify the process to add a Splunk logger provider.
