@@ -62,6 +62,12 @@ namespace Splunk.Providers
             if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.QueryString)
                 splunkCollectorUrl = splunkCollectorUrl + "?channel=" + Guid.NewGuid().ToString();
 
+            if(configuration.HecConfiguration.UseAuthTokenAsQueryString)
+            {
+                var tokenParameter = "token=" + configuration.HecConfiguration.Token;
+                splunkCollectorUrl = string.Format("{0}{1}{2}", splunkCollectorUrl, splunkCollectorUrl.Contains("?") ? "&" : "?", tokenParameter);
+            }
+
             return new Uri(splunkCollectorUrl);
         }
     }
