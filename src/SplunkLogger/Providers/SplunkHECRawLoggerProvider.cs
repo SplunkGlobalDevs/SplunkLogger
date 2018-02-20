@@ -40,12 +40,18 @@ namespace Splunk.Providers
             var splunkCollectorUrl = configuration.HecConfiguration.SplunkCollectorUrl;
             if (!splunkCollectorUrl.EndsWith("/", StringComparison.InvariantCulture))
                 splunkCollectorUrl += "/";
-
-            var baseAddress = new Uri(splunkCollectorUrl + "raw?channel=" + Guid.NewGuid().ToString());
-            httpClient.BaseAddress = baseAddress;
+            
+            if(configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.QueryString)
+                splunkCollectorUrl = splunkCollectorUrl + "raw?channel=" + Guid.NewGuid().ToString();
+            
+            httpClient.BaseAddress = new Uri(splunkCollectorUrl);
 
             httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
+
+            if(!configuration.HecConfiguration.UseTokenAsQueryString)
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
+            if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
+                httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
 
             batchManager = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMiliseconds, Emit);
         }
