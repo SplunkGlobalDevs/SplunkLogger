@@ -3,16 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Splunk;
 using Splunk.Configurations;
-using Vtex.SplunkLogger;
 
 namespace Vtex.SampleWebAPI
 {
     public class Startup
     {
-        static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter();
-
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -25,6 +23,7 @@ namespace Vtex.SampleWebAPI
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<SplunkLoggerConfiguration>(Configuration.GetSection("Splunk"));
             services.AddMvc();
         }
 
@@ -37,41 +36,57 @@ namespace Vtex.SampleWebAPI
         /// <param name="loggerFactory">Logger factory.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            ILoggerExtensions.SetApplication("SplunkLoggerSampleWebAPI");
-
             loggerFactory.AddDebug();
 
-            var splunkConfiguration = new SplunkLoggerConfiguration()
-            {
-                HecConfiguration = new HECConfiguration()
-                {
-                    SplunkCollectorUrl = "https://localhost:8088/services/collector",
-                    Token = "753c5a9c-fb59-4da0-9064-947f99dc20ba"
-                },
-                SocketConfiguration = new SocketConfiguration()
-                {
-                    HostName = "localhost",
-                    Port = 8111
-                }
-            };
+            var splunkLoggerConfigurationOption = app.ApplicationServices.GetService<IOptions<SplunkLoggerConfiguration>>();
 
-            /**************************** Define Your Logger ****************************/
-            /*                                                                          */
-            //loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, null);           //
-            loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, formatter);        //
-
-            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, null);          //
-            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration, formatter);     //
-
-            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, null);              //
-            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration, formatter);         //
-
-            //loggerFactory.AddUdpSplunkLogger(splunkConfiguration, null);
-            //loggerFactory.AddUdpSplunkLogger(splunkConfiguration, formatter);
-            /*                                                                          */
-            /**************************** Define Your Logger ****************************/
+            /******************************** Define Your Logger *********************************/
+            /*                                                                                   */
+            loggerFactory.AddHECRawSplunkLogger(splunkLoggerConfigurationOption.Value);          //
+            //                                                                                   //
+            //                                                                                   //
+            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration);                         //
+            //                                                                                   //
+            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration);                             //
+            //                                                                                   //
+            //loggerFactory.AddUdpSplunkLogger(splunkConfiguration);                             //
+            /*                                                                                   */
+            /******************************** Define Your Logger *********************************/
 
             app.UseMvc();
+        }
+
+        /// <summary>
+        /// Demonstrate how can you provide configuration to your splunk logger addapter(s) 
+        /// </summary>
+        SplunkLoggerConfiguration GetSplunkLoggerConfiguration(IApplicationBuilder app)
+        {
+            SplunkLoggerConfiguration result = null;
+
+            //Retrieving Splunk configuration from appsettings json configuration file
+            var splunkLoggerConfigurationOption = app.ApplicationServices.GetService<IOptions<SplunkLoggerConfiguration>>();
+            if(splunkLoggerConfigurationOption != null && splunkLoggerConfigurationOption.Value != null)
+                result = app.ApplicationServices.GetService<IOptions<SplunkLoggerConfiguration>>().Value;
+
+            //You can also provide a hard code configuration
+            //result = new SplunkLoggerConfiguration()
+            //{
+            //    HecConfiguration = new HECConfiguration()
+            //    {
+            //        SplunkCollectorUrl = "https://localhost:8088/services/collector",
+            //        BatchIntervalInMiliseconds = 5000,
+            //        BatchSizeCount = 100,
+            //        ChannelIdType = HECConfiguration.ChannelIdOption.None,
+                    
+            //        Token = "753c5a9c-fb59-4da0-9064-947f99dc20ba"
+            //    },
+            //    SocketConfiguration = new SocketConfiguration()
+            //    {
+            //        HostName = "localhost",
+            //        Port = 8111
+            //    }
+            //};
+            return result;
         }
     }
 }
