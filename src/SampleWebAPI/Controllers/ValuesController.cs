@@ -20,11 +20,13 @@ namespace Vtex.SampleWebAPI.Controllers
         public IEnumerable<string> Get()
         {
             var exception = new NotImplementedException();
-            logger.Log(LogLevel.Critical,
-                       new EventId(-1, "Values Controller"),
-                       new { route = "Get" },
-                       exception, null);
-            throw exception;
+            logger.Log(LogLevel.Critical, new EventId(-1, "Values Controller"), new { route = "Get" }, exception, 
+                       (argState, argException) => { 
+                return string.Format("{0} {1}", 
+                                     argState != null ? argState.ToString() : string.Empty,
+                                     argException != null ? argException.ToString() : string.Empty);
+            });
+            return new string[] { "4", "2" };
         }
     }
 }
