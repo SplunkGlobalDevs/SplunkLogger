@@ -42,9 +42,12 @@ namespace Splunk.Providers
         {
             httpClient = new HttpClient
             {
-                BaseAddress = GetSplunkCollectorUrl(configuration, endPointCustomization),
-                Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds)
+                BaseAddress = GetSplunkCollectorUrl(configuration, endPointCustomization)
             };
+
+            if (configuration.HecConfiguration.DefaultTimeoutInMiliseconds > 0)
+                httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds);
+
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
             if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
                 httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
