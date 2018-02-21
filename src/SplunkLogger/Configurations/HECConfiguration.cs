@@ -14,9 +14,9 @@ namespace Splunk.Configurations
         }
 
         /// <summary>
-        /// Gets or sets the batch interval in miliseconds.
+        /// Gets or sets the batch interval in miliseconds (default 1000).
         /// </summary>
-        public uint BatchIntervalInMiliseconds { get; set; }
+        public uint BatchIntervalInMiliseconds { get; set; } = 1000;
 
         /// <summary>
         /// Gets or sets the batch size count.
