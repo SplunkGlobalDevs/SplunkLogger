@@ -19,13 +19,12 @@ namespace Vtex.SampleWebAPI.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            logger.DefineVTEXLog(LogLevel.Critical, 
-                                 "Values Controller", 
-                                 "api/values", 
-                                 string.Empty, 
-                                 new NotImplementedException(), 
-                                 new Tuple<string, string>("method", "GET"));
-            return new string[] { "value1", "value2" };
+            var exception = new NotImplementedException();
+            logger.Log(LogLevel.Critical,
+                       new EventId(-1, "Values Controller"),
+                       new { route = "Get" },
+                       exception, null);
+            throw exception;
         }
     }
 }
