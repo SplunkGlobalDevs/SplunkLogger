@@ -20,6 +20,6 @@ namespace Splunk.Configurations
         /// <summary>
         /// Gets or sets the threshold.
         /// </summary>
-        public LogLevel Threshold { get; set; } = LogLevel.Warning;
+        public LogLevel Threshold { get; set; }
     }
 }

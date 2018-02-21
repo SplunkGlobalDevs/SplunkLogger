@@ -21,6 +21,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SplunkLogger\SplunkLogger.csproj" />
-    <ProjectReference Include="..\VTEXSplunkLogger\VTEXSplunkLogger.csproj" />
   </ItemGroup>
 </Project>

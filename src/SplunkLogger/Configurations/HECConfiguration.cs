@@ -16,17 +16,17 @@ namespace Splunk.Configurations
         /// <summary>
         /// Gets or sets the batch interval in miliseconds.
         /// </summary>
-        public uint BatchIntervalInMiliseconds { get; set; } = 5000; // 5 seconds
+        public uint BatchIntervalInMiliseconds { get; set; }
 
         /// <summary>
         /// Gets or sets the batch size count.
         /// </summary>
-        public uint BatchSizeCount { get; set; } = 10;
+        public uint BatchSizeCount { get; set; }
 
         /// <summary>
         /// Gets or sets the default timeout in miliseconds.
         /// </summary>
-        public int DefaultTimeoutInMiliseconds { get; set; } = 10000; // 10 seconds
+        public int DefaultTimeoutInMiliseconds { get; set; }
 
         /// <summary>
         /// Gets or sets the splunk collector URL.
@@ -34,12 +34,15 @@ namespace Splunk.Configurations
         public string SplunkCollectorUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets indication to use or not hec token autentication at query string
+        /// Gets or sets indication to use or not hec token autentication at query string.
         /// </summary>
         public bool UseAuthTokenAsQueryString { get; set; }
 
         /// <summary>
-        /// Gets or sets indication to use or not channel identification when using raw endpoint
+        /// Gets or sets indication to use or not channel identification when using raw endpoint.
+        /// It's important to say that Splunk documentation indicates that ChannelId parameter is only
+        /// required for Splunk versions older than 6.7.0.
+        /// So if you have earlier version you can supress send this extra data by using <value>ChannelIdOption.None</value>
         /// </summary>
         public ChannelIdOption ChannelIdType { get; set; } = ChannelIdOption.None;
 

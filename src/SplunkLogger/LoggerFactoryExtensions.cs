@@ -15,7 +15,7 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter)
+        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
         {
             loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter));
             return loggerFactory;
@@ -27,7 +27,7 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter)
+        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
         {
             loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter));
             return loggerFactory;
@@ -39,7 +39,7 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddTcpSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter)
+        public static ILoggerFactory AddTcpSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
         {
             loggerFactory.AddProvider(new SplunkTcpLoggerProvider(configuration, formatter));
             return loggerFactory;
@@ -51,7 +51,7 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddUdpSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter)
+        public static ILoggerFactory AddUdpSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
         {
             loggerFactory.AddProvider(new SplunkUdpLoggerProvider(configuration, formatter));
             return loggerFactory;
