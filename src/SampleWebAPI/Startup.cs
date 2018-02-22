@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Splunk;
 using Splunk.Configurations;
 
-namespace Vtex.SampleWebAPI
+namespace Splunk.SampleWebAPI
 {
     public class Startup
     {
