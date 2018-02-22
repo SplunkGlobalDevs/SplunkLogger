@@ -11,7 +11,6 @@ namespace Splunk.Providers
     /// </summary>
     public class SplunkTcpLoggerProvider : ILoggerProvider
     {
-        readonly LogLevel threshold;
         readonly ILoggerFormatter loggerFormatter;
         readonly ConcurrentDictionary<string, ILogger> loggers;
         readonly TcpClient tcpClient;
@@ -25,8 +24,6 @@ namespace Splunk.Providers
         {
             loggers = new ConcurrentDictionary<string, ILogger>();
 
-            threshold = configuration.Threshold;
-
             this.loggerFormatter = loggerFormatter;
 
             tcpClient = new TcpClient(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
@@ -36,7 +33,7 @@ namespace Splunk.Providers
 
         ILogger CreateLoggerInstance(string categoryName)
         {
-            return new TcpLogger(categoryName, threshold, tcpClient, loggerFormatter);
+            return new TcpLogger(categoryName, tcpClient, loggerFormatter);
         }
 
         /// <summary>

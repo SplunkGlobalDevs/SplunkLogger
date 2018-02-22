@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
+﻿
 namespace Splunk.Configurations
 {
     /// <summary>
@@ -16,10 +15,5 @@ namespace Splunk.Configurations
         /// Gets or sets the socket configuration.
         /// </summary>
         public SocketConfiguration SocketConfiguration { get; set; }
-
-        /// <summary>
-        /// Gets or sets the threshold.
-        /// </summary>
-        public LogLevel Threshold { get; set; }
     }
 }

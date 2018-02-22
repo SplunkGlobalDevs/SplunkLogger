@@ -16,11 +16,10 @@ namespace Splunk.Loggers
         /// Initializes a new instance of the <see cref="T:Splunk.Loggers.TcpLogger"/> class.
         /// </summary>
         /// <param name="categoryName">Category name.</param>
-        /// <param name="threshold">Threshold.</param>
         /// <param name="tcpClient">Tcp client.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
-        public TcpLogger(string categoryName, LogLevel threshold, TcpClient tcpClient, ILoggerFormatter loggerFormatter)
-            : base(categoryName, threshold, loggerFormatter)
+        public TcpLogger(string categoryName, TcpClient tcpClient, ILoggerFormatter loggerFormatter)
+            : base(categoryName, loggerFormatter)
         {
             this.tcpClient = tcpClient;
         }
