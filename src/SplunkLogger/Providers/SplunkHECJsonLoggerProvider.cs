@@ -38,7 +38,7 @@ namespace Splunk.Providers
 
             SetupHttpClient(configuration, "event");
 
-            batchController = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMiliseconds, Emit);
+            batchController = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMilliseconds, Emit);
         }
 
         /// <summary>
@@ -87,7 +87,41 @@ namespace Splunk.Providers
             httpClient.PostAsync(string.Empty, stringContent)
                       .ContinueWith(task => {
                           if (task.IsCompletedSuccessfully)
-                              Debug.WriteLine("Splunk HEC RAW Status: Sucess");
+                              switch (task.Result.StatusCode)
+                              {
+                                  case System.Net.HttpStatusCode.OK:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Request completed successfully.");
+                                      break;
+                                  case System.Net.HttpStatusCode.Created:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Create request completed successfully.");
+                                      break;
+                                  case System.Net.HttpStatusCode.BadRequest:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Request error. See response body for details.");
+                                      break;
+                                  case System.Net.HttpStatusCode.Unauthorized:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Authentication failure, invalid access credentials.");
+                                      break;
+                                  case System.Net.HttpStatusCode.PaymentRequired:
+                                      Debug.WriteLine("Splunk HEC JSON Status: In-use Splunk Enterprise license disables this feature.");
+                                      break;
+                                  case System.Net.HttpStatusCode.Forbidden:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Insufficient permission.");
+                                      break;
+                                  case System.Net.HttpStatusCode.NotFound:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Requested endpoint does not exist.");
+                                      break;
+                                  case System.Net.HttpStatusCode.Conflict:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Invalid operation for this endpoint. See response body for details.");
+                                      break;
+                                  case System.Net.HttpStatusCode.InternalServerError:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Unspecified internal server error. See response body for details.");
+                                      break;
+                                  case System.Net.HttpStatusCode.ServiceUnavailable:
+                                      Debug.WriteLine("Splunk HEC JSON Status: Feature is disabled in configuration file.");
+                                      break;
+                                  default:
+                                      break;
+                              }
                           else if (task.IsCanceled)
                               Debug.WriteLine("Splunk HEC RAW Status: Canceled");
                           else
