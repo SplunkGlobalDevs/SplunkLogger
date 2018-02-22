@@ -6,7 +6,7 @@ namespace Splunk.Loggers
     /// <summary>
     /// Define a base logger class.
     /// </summary>
-    public abstract class BaseLogger
+    public abstract class BaseLogger : ILogger
     {
         protected readonly ILoggerFormatter loggerFormatter;
 
@@ -43,5 +43,7 @@ namespace Splunk.Loggers
         {
             return null;
         }
+
+        public abstract void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter);
     }
 }

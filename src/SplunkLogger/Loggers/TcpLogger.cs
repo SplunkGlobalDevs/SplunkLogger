@@ -34,7 +34,7 @@ namespace Splunk.Loggers
         /// <param name="state">Log object state.</param>
         /// <param name="exception">Log Exception.</param>
         /// <param name="formatter">Log text formatter function.</param>
-        public void Log<T>(LogLevel logLevel, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
+        public override void Log<T>(LogLevel logLevel, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
         {
             string formatedMessage = string.Empty;
             if (loggerFormatter != null)
