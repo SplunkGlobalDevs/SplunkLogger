@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Vtex.SampleWebAPI.Controllers
+namespace Splunk.SampleWebAPI.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
@@ -20,7 +20,7 @@ namespace Vtex.SampleWebAPI.Controllers
         public IEnumerable<string> Get()
         {
             var exception = new NotImplementedException();
-            logger.Log(LogLevel.Critical, new EventId(-1, "Values Controller"), new { route = "Get" }, exception, 
+            logger.Log(LogLevel.Trace, new EventId(-1, "Values Controller"), new { route = "Get" }, exception, 
                        (argState, argException) => { 
                 return string.Format("{0} {1}", 
                                      argState != null ? argState.ToString() : string.Empty,

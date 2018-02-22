@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Vtex.SampleWebAPI
+namespace Splunk.SampleWebAPI
 {
     public class Program
     {

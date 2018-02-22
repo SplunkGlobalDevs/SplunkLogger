@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Splunk.Configurations;
 
@@ -72,6 +74,50 @@ namespace Splunk.Providers
             }
 
             return new Uri(splunkCollectorUrl);
+        }
+
+        protected void DebugSplunkResponse(Task<HttpResponseMessage> responseMessageTask, string loggerType)
+        {
+            if (responseMessageTask.IsCompletedSuccessfully)
+            {
+                switch (responseMessageTask.Result.StatusCode)
+                {
+                    case System.Net.HttpStatusCode.OK:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Request completed successfully.");
+                        break;
+                    case System.Net.HttpStatusCode.Created:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Create request completed successfully.");
+                        break;
+                    case System.Net.HttpStatusCode.BadRequest:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Request error. See response body for details.");
+                        break;
+                    case System.Net.HttpStatusCode.Unauthorized:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Authentication failure, invalid access credentials.");
+                        break;
+                    case System.Net.HttpStatusCode.PaymentRequired:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: In-use Splunk Enterprise license disables this feature.");
+                        break;
+                    case System.Net.HttpStatusCode.Forbidden:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Insufficient permission.");
+                        break;
+                    case System.Net.HttpStatusCode.NotFound:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Requested endpoint does not exist.");
+                        break;
+                    case System.Net.HttpStatusCode.Conflict:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Invalid operation for this endpoint. See response body for details.");
+                        break;
+                    case System.Net.HttpStatusCode.InternalServerError:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Unspecified internal server error. See response body for details.");
+                        break;
+                    case System.Net.HttpStatusCode.ServiceUnavailable:
+                        Debug.WriteLine($"Splunk HEC {loggerType} Status: Feature is disabled in configuration file.");
+                        break;
+                }
+            }
+            else if (responseMessageTask.IsCanceled)
+                Debug.WriteLine($"Splunk HEC {loggerType} Status: Canceled");
+            else
+                Debug.WriteLine($"Splunk HEC {loggerType} Status: Error " + responseMessageTask.Exception != null ? responseMessageTask.Exception.ToString() : "");
         }
     }
 }

@@ -4,10 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Splunk;
 using Splunk.Configurations;
 
-namespace Vtex.SampleWebAPI
+namespace Splunk.SampleWebAPI
 {
     public class Startup
     {
@@ -36,13 +35,15 @@ namespace Vtex.SampleWebAPI
         /// <param name="loggerFactory">Logger factory.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            //loggerFactory.AddDebug();
-
-            var splunkLoggerConfigurationOption = app.ApplicationServices.GetService<IOptions<SplunkLoggerConfiguration>>();
-
+            
             /******************************** Define Your Logger *********************************/
             /*                                                                                   */
-            loggerFactory.AddHECRawSplunkLogger(splunkLoggerConfigurationOption.Value);          //
+            // Get Configuration to be used at Logger                                            //
+            var splunkLoggerConfiguration = GetSplunkLoggerConfiguration(app);
+            //                                                                                   //
+            //                       Choose one or more of those loggers                         //
+            //                                                                                   //                                                                                  
+            loggerFactory.AddHECRawSplunkLogger(splunkLoggerConfiguration);                      //
             //                                                                                   //
             //                                                                                   //
             //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration);                         //
