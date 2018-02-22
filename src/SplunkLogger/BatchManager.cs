@@ -18,7 +18,7 @@ namespace Splunk
     {
         readonly ConcurrentBag<object> events;
         readonly uint batchSizeCount;
-        readonly uint batchIntervalInMiliseconds;
+        readonly uint batchIntervalInMilliseconds;
         readonly Timer timer;
         readonly Action<List<object>> emitAction;
 
@@ -29,17 +29,17 @@ namespace Splunk
         /// Initializes a new instance of the <see cref="T:Splunk.BatchManager"/> class.
         /// </summary>
         /// <param name="batchSizeCount">Batch size count.</param>
-        /// <param name="batchIntervalInMiliseconds">Batch interval in miliseconds.</param>
+        /// <param name="batchIntervalInMilliseconds">Batch interval in milliseconds.</param>
         /// <param name="emitAction">Emit action to be invoked at Emit process.</param>
-        public BatchManager(uint batchSizeCount, uint batchIntervalInMiliseconds, Action<List<object>> emitAction)
+        public BatchManager(uint batchSizeCount, uint batchIntervalInMilliseconds, Action<List<object>> emitAction)
         {
             events = new ConcurrentBag<object>();
             this.batchSizeCount = batchSizeCount;
-            this.batchIntervalInMiliseconds = batchIntervalInMiliseconds;
+            this.batchIntervalInMilliseconds = batchIntervalInMilliseconds;
 
-            if (batchIntervalInMiliseconds > 0)
+            if (batchIntervalInMilliseconds > 0)
             {
-                timer = new Timer(batchIntervalInMiliseconds);
+                timer = new Timer(batchIntervalInMilliseconds);
                 timer.AutoReset = false;
                 timer.Enabled = true;
                 timer.Elapsed += TimerTick;
