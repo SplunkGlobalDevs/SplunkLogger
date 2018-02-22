@@ -11,18 +11,15 @@ namespace Splunk.Loggers
         protected readonly ILoggerFormatter loggerFormatter;
 
         readonly string categoryName;
-        readonly LogLevel threshold;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Splunk.Loggers.BaseLogger"/> class.
         /// </summary>
         /// <param name="categoryName">Category name.</param>
-        /// <param name="threshold">Threshold.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
-        public BaseLogger(string categoryName, LogLevel threshold, ILoggerFormatter loggerFormatter)
+        public BaseLogger(string categoryName, ILoggerFormatter loggerFormatter)
         {
             this.categoryName = categoryName;
-            this.threshold = threshold;
             this.loggerFormatter = loggerFormatter;
         }
 
@@ -33,7 +30,7 @@ namespace Splunk.Loggers
         /// <param name="logLevel">.Net Core Log level.</param>
         public bool IsEnabled(LogLevel logLevel)
         {
-            return (int)logLevel >= (int)threshold;
+            return true;
         }
 
         /// <summary>

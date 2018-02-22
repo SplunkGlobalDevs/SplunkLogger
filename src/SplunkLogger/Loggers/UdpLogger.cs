@@ -16,11 +16,10 @@ namespace Splunk.Loggers
         /// Initializes a new instance of the <see cref="T:Splunk.Loggers.UdpLogger"/> class.
         /// </summary>
         /// <param name="categoryName">Category name.</param>
-        /// <param name="threshold">Threshold.</param>
         /// <param name="udpClient">UDP client.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
-        public UdpLogger(string categoryName, LogLevel threshold, UdpClient udpClient, ILoggerFormatter loggerFormatter)
-            : base(categoryName, threshold, loggerFormatter)
+        public UdpLogger(string categoryName, UdpClient udpClient, ILoggerFormatter loggerFormatter)
+            : base(categoryName, loggerFormatter)
         {
             this.udpClient = udpClient;
         }

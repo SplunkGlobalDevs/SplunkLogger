@@ -15,7 +15,6 @@ namespace Splunk.Providers
     public class SplunkHECRawLoggerProvider : SplunkHECBaseProvider, ILoggerProvider
     {
         readonly BatchManager batchManager;
-        readonly LogLevel threshold;
         readonly ILoggerFormatter loggerFormatter;
         readonly ConcurrentDictionary<string, ILogger> loggers;
 
@@ -27,8 +26,6 @@ namespace Splunk.Providers
         public SplunkHECRawLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
         {
             loggers = new ConcurrentDictionary<string, ILogger>();
-
-            threshold = configuration.Threshold;
 
             this.loggerFormatter = loggerFormatter;
 
@@ -68,7 +65,7 @@ namespace Splunk.Providers
         /// <param name="categoryName">Category name.</param>
         public override ILogger CreateLoggerInstance(string categoryName)
         {
-            return new HECRawLogger(categoryName, threshold, httpClient, batchManager, loggerFormatter);
+            return new HECRawLogger(categoryName, httpClient, batchManager, loggerFormatter);
         }
 
         /// <summary>

@@ -11,7 +11,6 @@ namespace Splunk.Providers
     /// </summary>
     public class SplunkUdpLoggerProvider : ILoggerProvider
     {
-        readonly LogLevel threshold;
         readonly ILoggerFormatter loggerFormatter;
         readonly ConcurrentDictionary<string, ILogger> loggers;
         readonly UdpClient udpClient;
@@ -25,8 +24,6 @@ namespace Splunk.Providers
         {
             loggers = new ConcurrentDictionary<string, ILogger>();
 
-            threshold = configuration.Threshold;
-
             this.loggerFormatter = loggerFormatter;
 
             udpClient = new UdpClient(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
@@ -36,7 +33,7 @@ namespace Splunk.Providers
 
         ILogger CreateLoggerInstance(string categoryName)
         {
-            return new UdpLogger(categoryName, threshold, udpClient, loggerFormatter);
+            return new UdpLogger(categoryName, udpClient, loggerFormatter);
         }
 
         /// <summary>
