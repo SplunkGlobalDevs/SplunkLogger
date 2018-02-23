@@ -1,4 +1,5 @@
 # SplunkLogger
+
 This is a C# .Net Core 2 ILogger implementation developed by **VTEX** developer [Caldas](https://github.com/Caldas) to send data to Splunk.
 
 ### Features
@@ -171,3 +172,7 @@ public class ValuesController : Controller
 ## More Information
 
 You can read more about the projects and it's details at [Wiki page](https://github.com/vtex/SplunkLogger/wiki)
+
+## Project Sponsored By
+
+![VTEX](https://raw.githubusercontent.com/vtex/SplunkLogger/documentation/improvements/VTEX_icon.png) **[VTEX](https://www.vtex.com)** 
