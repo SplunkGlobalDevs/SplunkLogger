@@ -175,4 +175,4 @@ You can read more about the projects and it's details (like send http events as 
 
 ## Project Sponsored By
 
-![VTEX](https://raw.githubusercontent.com/vtex/SplunkLogger/master/VTEX_icon.png) **[VTEX](https://www.vtex.com)** 
+**[VTEX](https://www.vtex.com)** 
