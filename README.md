@@ -1,5 +1,5 @@
 # SplunkLogger
-This is a C# .Net Core 2 ILogger implementation developed by **VTEX** developer (@[Caldas](https://github.com/Caldas)) to send data to Splunk.
+This is a C# .Net Core 2 ILogger implementation developed by **VTEX** developer [Caldas](https://github.com/Caldas) to send data to Splunk.
 
 ### Features
 
@@ -23,7 +23,7 @@ PM> Install-Package SplunkLogger
 
 ### Configure Logger
 
-Let's say for instance that your are creating a WebAPI project, so the first step is to configure one of the Splunk loggers options
+Let's say for instance that you are creating a WebAPI project, so the first step is to configure one of the Splunk loggers options:
 ```csharp
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
@@ -43,15 +43,14 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 }
 ```
 
-As you can see, no matter what is your option you always must delivery a *SplunkLoggerConfiguration* that can be provided by two ways:
+As you can see, no matter what is your option you always must delivery a *SplunkLoggerConfiguration* when adding a ILogger to the logger factory. You can provide it via config or as hard code:
 
 #### Get Configuration From Json File
 
-First, and most beautiful one. 
+You can provide the configuration from json file using .Net Core 2 configuration binding feature. 
 
-You can provide the configuration from json file. In this case I will be using *appsettings.json* as source and loading it using .Net Core 2 configuration binding feature.
+For instance at [SampleWebAPI project](https://github.com/vtex/SplunkLogger/tree/master/src/SampleWebAPI) we use the *appsettings.json* file.
 
-So first, let's check the json file. 
 ```json
 {
   "Logging": {
@@ -81,9 +80,9 @@ So first, let's check the json file.
 }
 ```
 
-If you intend to use send data via **Http** you should set **HecConfiguration** section and if you choose to send data via socket you must set **SocketConfiguration** section.
+If you intend to send data via **Http** you should set **HecConfiguration** section and if you choose to send data via socket you must set **SocketConfiguration** section.
 
-Now we need to configure SplunkLoggerConfiguration and indicate to use **Splunk** section from configuration file.
+Now we need to configure SplunkLoggerConfiguration at dependency injection and indicate to use **Splunk** section from configuration file.
 ```csharp
 /// <summary>
 /// This method gets called by the runtime. Use this method to add services to the container.
@@ -112,7 +111,7 @@ SplunkLoggerConfiguration GetSplunkLoggerConfiguration(IApplicationBuilder app)
 
 #### Get Static Configuration
 
-You can also provide a hard coded configuration instance:
+If you don't want to use the configuration file, you can provide a hard coded configuration instance:
 
 ```csharp
 /// <summary>
@@ -140,11 +139,13 @@ SplunkLoggerConfiguration GetSplunkLoggerConfiguration(IApplicationBuilder app)
 }
 ```
 
-If you intend to use send data via **Http** you should set **HecConfiguration** property and if you choose to send data via socket you must set **SocketConfiguration** property.
+Again, if you intend to use send data via **Http** you should set **HecConfiguration** property and if you choose to send data via socket you must set **SocketConfiguration** property.
  
-### Sample Logging 
+### Logging 
 
-At controller you must receive `ILoggerFactory loggerFactory` and extract `ILogger`from it and use this `ILogger` instance to log any desired event, as sample below:
+Now that everything is configured and ILoggerFactory already have the desired ILogger instance added you can log your messages.
+
+Here is a sample of how you can log messages, in this case I'm logging a `NotImplementedException` at [SampleWebAPI project](https://github.com/vtex/SplunkLogger/tree/master/src/SampleWebAPI) `ValuesController`.
 
 ```csharp
 [Route("api/[controller]")]
@@ -167,6 +168,6 @@ public class ValuesController : Controller
 }
 ```
 
-### Sending Http Events As Batchs
+## More Information
 
-**To Be Definied**
+You can read more about the projects and it's details at [Wiki page](https://github.com/vtex/SplunkLogger/wiki)
