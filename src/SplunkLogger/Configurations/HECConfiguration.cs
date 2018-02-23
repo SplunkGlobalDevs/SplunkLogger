@@ -14,7 +14,7 @@ namespace Splunk.Configurations
         }
 
         /// <summary>
-        /// Gets or sets the batch interval in miliseconds.
+        /// Gets or sets the batch interval in milliseconds.
         /// </summary>
         public uint BatchIntervalInMilliseconds { get; set; }
 
@@ -24,9 +24,9 @@ namespace Splunk.Configurations
         public uint BatchSizeCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the default timeout in miliseconds.
+        /// Gets or sets the default timeout in milliseconds.
         /// </summary>
-        public int DefaultTimeoutInMiliseconds { get; set; }
+        public int DefaultTimeoutInMilliseconds { get; set; }
 
         /// <summary>
         /// Gets or sets the splunk collector URL.
