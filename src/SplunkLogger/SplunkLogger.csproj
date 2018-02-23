@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ReleaseVersion>1.0.7</ReleaseVersion>
-    <Version>1.0.7</Version>
+    <ReleaseVersion>1.0.8</ReleaseVersion>
+    <Version>1.0.8</Version>
     <Description>Splunk .Net Core ILogger Compatible Library</Description>
     <RootNamespace>Splunk</RootNamespace>
     <Authors>Fábio Caldas</Authors>

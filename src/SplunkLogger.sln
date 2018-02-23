@@ -22,6 +22,6 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = C# .Net Core 2 Splunk ILogger Compatible Implementation
-		version = 1.0.7
+		version = 1.0.8
 	EndGlobalSection
 EndGlobal
