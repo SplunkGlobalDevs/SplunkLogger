@@ -47,8 +47,8 @@ namespace Splunk.Providers
                 BaseAddress = GetSplunkCollectorUrl(configuration, endPointCustomization)
             };
 
-            if (configuration.HecConfiguration.DefaultTimeoutInMiliseconds > 0)
-                httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMiliseconds);
+            if (configuration.HecConfiguration.DefaultTimeoutInMilliseconds > 0)
+                httpClient.Timeout = TimeSpan.FromMilliseconds(configuration.HecConfiguration.DefaultTimeoutInMilliseconds);
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
             if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)

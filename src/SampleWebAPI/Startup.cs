@@ -75,7 +75,7 @@ namespace Splunk.SampleWebAPI
             //    HecConfiguration = new HECConfiguration()
             //    {
             //        SplunkCollectorUrl = "https://localhost:8088/services/collector",
-            //        BatchIntervalInMiliseconds = 5000,
+            //        BatchIntervalInMilliseconds = 5000,
             //        BatchSizeCount = 100,
             //        ChannelIdType = HECConfiguration.ChannelIdOption.None,
                     
