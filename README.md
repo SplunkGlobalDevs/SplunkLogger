@@ -171,7 +171,7 @@ public class ValuesController : Controller
 
 ## More Information
 
-You can read more about the projects and it's details at [Wiki page](https://github.com/vtex/SplunkLogger/wiki)
+You can read more about the projects and it's details (like send http events as batch) at [Wiki page](https://github.com/vtex/SplunkLogger/wiki)
 
 ## Project Sponsored By
 
