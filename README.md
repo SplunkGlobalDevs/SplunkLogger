@@ -1,16 +1,18 @@
 # SplunkLogger
-This is a C# .Net Core 2 Splunk ILogger implementation developed at **VTEX** to send log to **Splunk**
+This is a C# .Net Core 2 ILogger implementation developed by **VTEX** developer (@[Caldas](https://github.com/Caldas)) to send data to Splunk.
+
+### Features
+
+* Multiples ILoggers to send data via **Http** or **Socket**
+  * **Http** loggers available to send data via **Raw** or **Json** routes
+  * **Socket** loggers available to send data via **TCP** or **UDP**
+* Send **Http** events as batch (Improve **Splunk** *HEC* performance sending data as batch)
+
+### NuGet Package Status
 
 | Package Name                   | Release |
 |--------------------------------|-----------------|
 | `SplunkLogger`         | [![NuGet](https://img.shields.io/nuget/v/SplunkLogger.svg)](https://www.nuget.org/packages/SplunkLogger/) |
-
-It was developed to be integrated to .Net Core 2 logging abstractions.
-
-### Features
-
-* ILoggers **HEC** (*Raw* and *Json*) and **Socket** (*TCP* and *UDP*)
-* Batch Manager class (Improve **Splunk** *HEC* performance sending data as batch)
 
 ## Usage
 
@@ -19,29 +21,130 @@ Add *SplunkLogger* nuget library
 PM> Install-Package SplunkLogger
 ```
 
-Initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
+### Configure Logger
 
+Let's say for instance that your are creating a WebAPI project, so the first step is to configure one of the Splunk loggers options
 ```csharp
-static readonly ILoggerFormatter formatter = null;
-
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
-    var splunkConfiguration = new SplunkLoggerConfiguration()
+    var splunkLoggerConfiguration = GetSplunkLoggerConfiguration(app);
+    
+    //Append Http Raw logger 
+    //loggerFactory.AddHECRawSplunkLogger(splunkLoggerConfiguration);
+    
+    //Append Http Json logger
+    loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration);
+    
+    //Append Socket TCP logger
+    //loggerFactory.AddTcpSplunkLogger(splunkConfiguration);
+    
+    //Append Socket UDP logger
+    //loggerFactory.AddUdpSplunkLogger(splunkConfiguration);
+}
+```
+
+As you can see, no matter what is your option you always must delivery a *SplunkLoggerConfiguration* that can be provided by two ways:
+
+#### Get Configuration From Json File
+
+First, and most beautiful one. 
+
+You can provide the configuration from json file. In this case I will be using *appsettings.json* as source and loading it using .Net Core 2 configuration binding feature.
+
+So first, let's check the json file. 
+```json
+{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Trace",
+      "System": "Debug",
+      "Microsoft": "Debug",
+      "Splunk": "Trace"
+    }
+  },
+  "Splunk": {
+    "HecConfiguration": {
+      "BatchIntervalInMilliseconds": 5000,
+      "BatchSizeCount": 10,
+      "ChannelIdType": "None",
+      "DefaultTimeoutInMiliseconds": 10000,
+      "SplunkCollectorUrl": "https://localhost:8088/services/collector/",
+      "Token": "753c5a9c-fb59-4da0-9064-947f99dc20ba",
+      "UseAuthTokenAsQueryString": false
+    },
+    "SocketConfiguration": {
+      "HostName": "localhost",
+      "Port": 4242
+    }
+  }
+}
+```
+
+If you intend to use send data via **Http** you should set **HecConfiguration** section and if you choose to send data via socket you must set **SocketConfiguration** section.
+
+Now we need to configure SplunkLoggerConfiguration and indicate to use **Splunk** section from configuration file.
+```csharp
+/// <summary>
+/// This method gets called by the runtime. Use this method to add services to the container.
+/// </summary>
+public void ConfigureServices(IServiceCollection services)
+{
+    services.Configure<SplunkLoggerConfiguration>(Configuration.GetSection("Splunk"));
+    services.AddMvc();
+}
+```
+
+Now that `SplunkLoggerConfiguration` class is configured we can retrieve it by requesting `IOptions<SplunkLoggerConfiguration>` at dependency injection service, like:
+```csharp
+/// <summary>
+/// Demonstrate how can you provide configuration to your splunk logger addapter(s) 
+/// </summary>
+SplunkLoggerConfiguration GetSplunkLoggerConfiguration(IApplicationBuilder app)
+{
+    SplunkLoggerConfiguration result = null;
+    var splunkLoggerConfigurationOption = app.ApplicationServices.GetService<IOptions<SplunkLoggerConfiguration>>();
+    if(splunkLoggerConfigurationOption != null && splunkLoggerConfigurationOption.Value != null)
+        result = app.ApplicationServices.GetService<IOptions<SplunkLoggerConfiguration>>().Value;
+    return result;
+}
+```
+
+#### Get Static Configuration
+
+You can also provide a hard coded configuration instance:
+
+```csharp
+/// <summary>
+/// Demonstrate how can you provide configuration to your splunk logger addapter(s) 
+/// </summary>
+SplunkLoggerConfiguration GetSplunkLoggerConfiguration(IApplicationBuilder app)
+{
+    SplunkLoggerConfiguration result = new SplunkLoggerConfiguration()
     {
         HecConfiguration = new HECConfiguration()
         {
             SplunkCollectorUrl = "https://localhost:8088/services/collector",
+            BatchIntervalInMilliseconds = 5000,
+            BatchSizeCount = 100,
+            ChannelIdType = HECConfiguration.ChannelIdOption.None,
             Token = "753c5a9c-fb59-4da0-9064-947f99dc20ba"
+        },
+        SocketConfiguration = new SocketConfiguration()
+        {
+            HostName = "localhost",
+            Port = 8111
         }
     };
-    loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, formatter);
-    app.UseMvc();
+    return result;
 }
 ```
 
-The case above is using a **Splunk** *HEC Raw* logger without any custom formatter as log provider.
+If you intend to use send data via **Http** you should set **HecConfiguration** property and if you choose to send data via socket you must set **SocketConfiguration** property.
+ 
+### Sample Logging 
 
-Now, in your controller you can log normally, for instance:
+At controller you must receive `ILoggerFactory loggerFactory` and extract `ILogger`from it and use this `ILogger` instance to log any desired event, as sample below:
 
 ```csharp
 [Route("api/[controller]")]
@@ -64,79 +167,6 @@ public class ValuesController : Controller
 }
 ```
 
--------------------------------------------
+### Sending Http Events As Batchs
 
-# VTEXSplunkLogger
-For us at **VTEX** we need more customized log entries at Splunk and also we need easier ways to call for log registration during the code. For that, we created this *VTEXSplunkLogger* library.
-
-This project contains all **VTEX** extra classes designed to ease logging. All classes changes .Net Core 2 log abstraction to a customized log entry at **Splunk**
-
-| Package Name                   | Release |
-|--------------------------------|-----------------|
-| `VTEXSplunkLogger` | [![MyGet](https://img.shields.io/myget/vtexlab/v/VTEXSplunkLogger.svg)](https://www.myget.org/feed/vtexlab/package/nuget/VTEXSplunkLogger) |
-
-### Features
-
-* ILoggerExtensions (*Allow easy log creation*)
-* LoggerFactoryExtensions (*Simplify loggerFactory add provider method call*)
-* VTEXSplunkLoggerFormatter (*Custom `ILoggerFormatter` which creates VTEX's custom text to Splunk*)
-
-
-## Usage
-
-Add *VTEXSplunkLogger* nuget library
-```powershell
-PM> Install-Package VTEXSplunkLogger -Source https://www.myget.org/F/vtexlab/api/v3/index.json
-```
-
-Initialize a new *SplunkLoggerConfiguration* and the logger provider at **Configure** method at **Startup** class:
-
-```csharp
-static readonly ILoggerFormatter formatter = new VTEXSplunkLoggerFormatter();
-
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-{
-    //TODO: Set your project name
-    ILoggerExtensions.SetApplication("ProjectX"); 
-    
-    var splunkConfiguration = new SplunkLoggerConfiguration()
-    {
-        HecConfiguration = new HECConfiguration()
-        {
-            SplunkCollectorUrl = "https://localhost:8088/services/collector",
-            Token = "753c5a9c-fb59-4da0-9064-947f99dc20ba"
-        }
-    };
-    loggerFactory.AddHECRawSplunkLogger(splunkConfiguration, formatter);
-    app.UseMvc();
-}
-```
-
-```csharp
-using Vtex;
-// other usings ..
-
-[Route("api/[controller]")]
-public class ValuesController : Controller
-{
-    readonly ILogger logger;
-
-    public ValuesController(ILoggerFactory loggerFactory)
-    {
-        logger = loggerFactory.CreateLogger<ValuesController>();
-    }
-
-    // GET api/values
-    [HttpGet]
-    public IEnumerable<string> Get()
-    {
-        logger.DefineVTEXLog(LogLevel.Critical, 
-                             "Values Controller", 
-                             "api/values", 
-                             string.Empty, 
-                             new NotImplementedException(), 
-                             new Tuple<string, string>("method", "GET"));
-        return new string[] { "value1", "value2" };
-    }
-}
-```
+**To Be Definied**
