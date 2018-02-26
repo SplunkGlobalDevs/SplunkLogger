@@ -24,20 +24,17 @@ namespace Splunk.Providers
         /// <param name="configuration">Splunk configuration instance for HEC.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
         public SplunkHECRawLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
+            :base(configuration, "raw")
         {
-            loggers = new ConcurrentDictionary<string, ILogger>();
-
             this.loggerFormatter = loggerFormatter;
-
-            SetupHttpClient(configuration, "raw");
-
+            loggers = new ConcurrentDictionary<string, ILogger>();
             batchManager = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMilliseconds, Emit);
         }
 
         /// <summary>
-        /// Create a <see cref="T:Splunk.Loggers.HECRawLogger"/> instance to the category name provided.
+        /// Get a <see cref="T:Splunk.Loggers.HECJsonLogger"/> instance to the category name provided.
         /// </summary>
-        /// <returns><see cref="T:Splunk.Loggers.HECRawLogger"/> instance.</returns>
+        /// <returns><see cref="T:Splunk.Loggers.HECJsonLogger"/> instance.</returns>
         /// <param name="categoryName">Category name.</param>
         public override ILogger CreateLogger(string categoryName)
         {
@@ -45,27 +42,17 @@ namespace Splunk.Providers
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/> object.
+        /// Releases all resource used by the <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> object.
         /// </summary>
         /// <remarks>Call <see cref="Dispose"/> when you are finished using the
-        /// <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/>. The <see cref="Dispose"/> method leaves the
-        /// <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/> in an unusable state. After calling
+        /// <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/>. The <see cref="Dispose"/> method leaves the
+        /// <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> in an unusable state. After calling
         /// <see cref="Dispose"/>, you must release all references to the
-        /// <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/> so the garbage collector can reclaim the memory
-        /// that the <see cref="T:Splunk.Providers.SplunkHECRawLoggerProvider"/> was occupying.</remarks>
+        /// <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> so the garbage collector can reclaim the memory
+        /// that the <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> was occupying.</remarks>
         public override void Dispose()
         {
             loggers.Clear();
-        }
-
-        /// <summary>
-        /// Create a <see cref="T:Splunk.Loggers.HECRawLogger"/> instance to the category name provided.
-        /// </summary>
-        /// <returns><see cref="T:Splunk.Loggers.HECRawLogger"/> instance.</returns>
-        /// <param name="categoryName">Category name.</param>
-        public override ILogger CreateLoggerInstance(string categoryName)
-        {
-            return new HECRawLogger(categoryName, httpClient, batchManager, loggerFormatter);
         }
 
         /// <summary>
@@ -78,6 +65,11 @@ namespace Splunk.Providers
             var stringContent = new StringContent(formatedMessage);
             httpClient.PostAsync(string.Empty, stringContent)
                       .ContinueWith(task => DebugSplunkResponse(task, "raw"));
+        }
+
+        ILogger CreateLoggerInstance(string categoryName)
+        {
+            return new HECRawLogger(categoryName, httpClient, batchManager, loggerFormatter);
         }
     }
 }

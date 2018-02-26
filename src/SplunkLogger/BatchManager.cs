@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace Splunk
 {
@@ -18,7 +18,6 @@ namespace Splunk
     {
         readonly ConcurrentBag<object> events;
         readonly uint batchSizeCount;
-        readonly uint batchIntervalInMilliseconds;
         readonly Timer timer;
         readonly Action<List<object>> emitAction;
 
@@ -31,57 +30,44 @@ namespace Splunk
         /// <param name="batchSizeCount">Batch size count.</param>
         /// <param name="batchIntervalInMilliseconds">Batch interval in milliseconds.</param>
         /// <param name="emitAction">Emit action to be invoked at Emit process.</param>
-        public BatchManager(uint batchSizeCount, uint batchIntervalInMilliseconds, Action<List<object>> emitAction)
+        public BatchManager(uint batchSizeCount, int batchIntervalInMilliseconds, Action<List<object>> emitAction)
         {
             events = new ConcurrentBag<object>();
             this.batchSizeCount = batchSizeCount;
-            this.batchIntervalInMilliseconds = batchIntervalInMilliseconds;
 
             if (batchIntervalInMilliseconds > 0)
-            {
-                timer = new Timer(batchIntervalInMilliseconds);
-                timer.AutoReset = false;
-                timer.Enabled = true;
-                timer.Elapsed += TimerTick;
-                timer.Start();
-            }
+                timer = new Timer(EmitTimeChek, null, 0, batchIntervalInMilliseconds);
 
             this.emitAction = emitAction;
         }
 
-        void TimerTick(object sender, ElapsedEventArgs e)
+        void EmitTimeChek(object state)
         {
-            Task
-            .Factory
-            .StartNew(() =>
-            {
-                if (events.Count > 0)
-                    Emit();
-            }).ContinueWith(task =>
-            {
-                timer?.Start();
-            });
+            if (events.Count > 0)
+                Emit();
         }
 
         void Emit()
         {
-            bool continueExtraction = true;
-            List<object> emitEvents = new List<object>();
-            while (continueExtraction)
-            {
-                if (events.Count == 0)
-                    continueExtraction = false;
-                else
+            Task.Factory.StartNew(() => {
+                bool continueExtraction = true;
+                List<object> emitEvents = new List<object>();
+                while (continueExtraction)
                 {
-                    events.TryTake(out object item);
-                    if (item != null)
-                        emitEvents.Add(item);
-                    if (events.Count == 0 || emitEvents.Count >= batchSizeCount)
+                    if (events.Count == 0)
                         continueExtraction = false;
+                    else
+                    {
+                        events.TryTake(out object item);
+                        if (item != null)
+                            emitEvents.Add(item);
+                        if (events.Count == 0 || emitEvents.Count >= batchSizeCount)
+                            continueExtraction = false;
+                    }
                 }
-            }
-            if (emitEvents.Count > 0)
-                emitAction?.Invoke(emitEvents);
+                if (emitEvents.Count > 0)
+                    emitAction?.Invoke(emitEvents);
+            });
         }
 
         /// <summary>

@@ -1,8 +1,8 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Splunk.Configurations;
 using Splunk.Loggers;
 using System.Net.Sockets;
+using System.Collections.Concurrent;
 
 namespace Splunk.Providers
 {
@@ -12,8 +12,8 @@ namespace Splunk.Providers
     public class SplunkTcpLoggerProvider : ILoggerProvider
     {
         readonly ILoggerFormatter loggerFormatter;
+        readonly SplunkLoggerConfiguration configuration;
         readonly ConcurrentDictionary<string, ILogger> loggers;
-        readonly TcpClient tcpClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Splunk.Providers.SplunkTcpLoggerProvider"/> class.
@@ -22,19 +22,11 @@ namespace Splunk.Providers
         /// <param name="loggerFormatter">Formatter instance.</param>
         public SplunkTcpLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
         {
+            this.loggerFormatter = loggerFormatter;
+            this.configuration = configuration;
             loggers = new ConcurrentDictionary<string, ILogger>();
 
-            this.loggerFormatter = loggerFormatter;
-
-            tcpClient = new TcpClient(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
-            if (!tcpClient.Connected)
-                tcpClient.Connect(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
-        }
-
-        ILogger CreateLoggerInstance(string categoryName)
-        {
-            return new TcpLogger(categoryName, tcpClient, loggerFormatter);
-        }
+                    }
 
         /// <summary>
         /// Create a <see cref="T:Splunk.Loggers.TcpLogger"/> instance to the category name provided.
@@ -55,9 +47,19 @@ namespace Splunk.Providers
         /// <see cref="Dispose"/>, you must release all references to the
         /// <see cref="T:Splunk.Providers.SplunkTcpLoggerProvider"/> so the garbage collector can reclaim the memory
         /// that the <see cref="T:Splunk.Providers.SplunkTcpLoggerProvider"/> was occupying.</remarks>
-        public void Dispose()
+        public void Dispose() 
         {
             loggers.Clear();
+        }
+
+        ILogger CreateLoggerInstance(string categoryName)
+        {
+            var tcpClient = new TcpClient(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
+            if (!tcpClient.Connected)
+                tcpClient.Connect(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
+
+            return new TcpLogger(categoryName, tcpClient, loggerFormatter);
+
         }
     }
 }

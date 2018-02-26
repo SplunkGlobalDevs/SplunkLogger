@@ -1,8 +1,8 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Splunk.Configurations;
 using Splunk.Loggers;
 using System.Net.Sockets;
+using System.Collections.Concurrent;
 
 namespace Splunk.Providers
 {
@@ -12,8 +12,8 @@ namespace Splunk.Providers
     public class SplunkUdpLoggerProvider : ILoggerProvider
     {
         readonly ILoggerFormatter loggerFormatter;
+        readonly SplunkLoggerConfiguration configuration;
         readonly ConcurrentDictionary<string, ILogger> loggers;
-        readonly UdpClient udpClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Splunk.Providers.SplunkUdpLoggerProvider"/> class.
@@ -22,18 +22,9 @@ namespace Splunk.Providers
         /// <param name="loggerFormatter">Formatter instance.</param>
         public SplunkUdpLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
         {
-            loggers = new ConcurrentDictionary<string, ILogger>();
-
             this.loggerFormatter = loggerFormatter;
-
-            udpClient = new UdpClient(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
-            if (!udpClient.Client.Connected)
-                udpClient.Client.Connect(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
-        }
-
-        ILogger CreateLoggerInstance(string categoryName)
-        {
-            return new UdpLogger(categoryName, udpClient, loggerFormatter);
+            this.configuration = configuration;
+            loggers = new ConcurrentDictionary<string, ILogger>();
         }
 
         /// <summary>
@@ -55,9 +46,18 @@ namespace Splunk.Providers
         /// <see cref="Dispose"/>, you must release all references to the
         /// <see cref="T:Splunk.Providers.SplunkUdpLoggerProvider"/> so the garbage collector can reclaim the memory
         /// that the <see cref="T:Splunk.Providers.SplunkUdpLoggerProvider"/> was occupying.</remarks>
-        public void Dispose()
+        public void Dispose() 
         {
             loggers.Clear();
+        }
+
+        ILogger CreateLoggerInstance(string categoryName)
+        {
+            var udpClient = new UdpClient(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
+            if (!udpClient.Client.Connected)
+                udpClient.Client.Connect(configuration.SocketConfiguration.HostName, configuration.SocketConfiguration.Port);
+            
+            return new UdpLogger(categoryName, udpClient, loggerFormatter);
         }
     }
 }

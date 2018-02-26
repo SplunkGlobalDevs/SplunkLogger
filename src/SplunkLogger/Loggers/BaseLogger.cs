@@ -9,8 +9,7 @@ namespace Splunk.Loggers
     public abstract class BaseLogger : ILogger
     {
         protected readonly ILoggerFormatter loggerFormatter;
-
-        readonly string categoryName;
+        protected readonly string categoryName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Splunk.Loggers.BaseLogger"/> class.

@@ -35,22 +35,20 @@ namespace Splunk.SampleWebAPI
         /// <param name="loggerFactory">Logger factory.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            
             /******************************** Define Your Logger *********************************/
             /*                                                                                   */
-            // Get Configuration to be used at Logger                                            //
-            var splunkLoggerConfiguration = GetSplunkLoggerConfiguration(app);
+            //                    First get configuration to be used at Logger                   //
+            var splunkLoggerConfiguration = GetSplunkLoggerConfiguration(app);                   //
             //                                                                                   //
-            //                       Choose one or more of those loggers                         //
+            //                       Choose one of those loggers                                 //
             //                                                                                   //                                                                                  
             loggerFactory.AddHECRawSplunkLogger(splunkLoggerConfiguration);                      //
             //                                                                                   //
+            //loggerFactory.AddHECJsonSplunkLogger(splunkLoggerConfiguration);                   //
             //                                                                                   //
-            //loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration);                         //
+            //loggerFactory.AddTcpSplunkLogger(splunkLoggerConfiguration);                       //
             //                                                                                   //
-            //loggerFactory.AddTcpSplunkLogger(splunkConfiguration);                             //
-            //                                                                                   //
-            //loggerFactory.AddUdpSplunkLogger(splunkConfiguration);                             //
+            //loggerFactory.AddUdpSplunkLogger(splunkLoggerConfiguration);                       //
             /*                                                                                   */
             /******************************** Define Your Logger *********************************/
 
