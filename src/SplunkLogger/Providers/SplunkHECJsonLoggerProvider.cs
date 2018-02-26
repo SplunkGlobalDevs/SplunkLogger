@@ -15,7 +15,7 @@ namespace Splunk.Providers
     /// </summary>
     public class SplunkHECJsonLoggerProvider : SplunkHECBaseProvider, ILoggerProvider
     {
-        readonly BatchManager batchController;
+        readonly BatchManager batchManager;
         readonly ILoggerFormatter loggerFormatter;
         readonly ConcurrentDictionary<string, ILogger> loggers;
 
@@ -25,14 +25,11 @@ namespace Splunk.Providers
         /// <param name="configuration">Splunk configuration instance for HEC.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
         public SplunkHECJsonLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
+            : base(configuration, "event")
         {
-            loggers = new ConcurrentDictionary<string, ILogger>();
-
             this.loggerFormatter = loggerFormatter;
-
-            SetupHttpClient(configuration, "event");
-
-            batchController = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMilliseconds, Emit);
+            loggers = new ConcurrentDictionary<string, ILogger>();
+            batchManager = new BatchManager(configuration.HecConfiguration.BatchSizeCount, configuration.HecConfiguration.BatchIntervalInMilliseconds, Emit);
         }
 
         /// <summary>
@@ -60,16 +57,6 @@ namespace Splunk.Providers
         }
 
         /// <summary>
-        /// Create a <see cref="T:Splunk.Loggers.HECJsonLogger"/> instance to the category name provided.
-        /// </summary>
-        /// <returns>The logger instance.</returns>
-        /// <param name="categoryName">Category name.</param>
-        public override ILogger CreateLoggerInstance(string categoryName)
-        {
-            return new HECJsonLogger(categoryName, httpClient, batchController, loggerFormatter);
-        }
-
-        /// <summary>
         /// Method used to emit batched events.
         /// </summary>
         /// <param name="events">Events batched.</param>
@@ -80,6 +67,11 @@ namespace Splunk.Providers
             var stringContent = new StringContent(formatedMessage, Encoding.UTF8, "application/json");
             httpClient.PostAsync(string.Empty, stringContent)
                       .ContinueWith(task => DebugSplunkResponse(task, "json"));
+        }
+
+        ILogger CreateLoggerInstance(string categoryName)
+        {
+            return new HECJsonLogger(categoryName, httpClient, batchManager, loggerFormatter);
         }
     }
 }

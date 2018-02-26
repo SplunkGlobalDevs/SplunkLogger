@@ -35,7 +35,7 @@ namespace Splunk.Loggers
         {
             SplunkJSONEntry formatedMessage = null;
             if (loggerFormatter != null)
-                formatedMessage = loggerFormatter.FormatJson(logLevel, eventId, state, exception);
+                formatedMessage = loggerFormatter.FormatJson(categoryName, logLevel, eventId, state, exception);
             else if (formatter != null)
                 formatedMessage = new SplunkJSONEntry(formatter(state, exception));
             batchManager.Add(JObject.FromObject(formatedMessage));

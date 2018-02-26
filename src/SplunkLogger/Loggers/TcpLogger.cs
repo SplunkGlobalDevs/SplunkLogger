@@ -37,7 +37,7 @@ namespace Splunk.Loggers
         {
             string formatedMessage = string.Empty;
             if (loggerFormatter != null)
-                formatedMessage = loggerFormatter.Format(logLevel, eventId, state, exception);
+                formatedMessage = loggerFormatter.Format(categoryName, logLevel, eventId, state, exception);
             else if (formatter != null)
                 formatedMessage = formatter(state, exception);
 
