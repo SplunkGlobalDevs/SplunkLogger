@@ -61,7 +61,7 @@ namespace Splunk.Providers
         /// <param name="events">Events batched.</param>
         public void Emit(List<object> events)
         {
-            var formatedMessage = string.Join(Environment.NewLine, events.Select(evt => evt.ToString()));
+            var formatedMessage = string.Join("\\r\\n", events.Select(evt => evt.ToString().Trim()));
             var stringContent = new StringContent(formatedMessage);
             httpClient.PostAsync(string.Empty, stringContent)
                       .ContinueWith(task => DebugSplunkResponse(task, "raw"));
