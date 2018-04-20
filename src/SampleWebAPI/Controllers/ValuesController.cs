@@ -20,12 +20,14 @@ namespace Splunk.SampleWebAPI.Controllers
         public IEnumerable<string> Get()
         {
             var exception = new NotImplementedException();
-            logger.Log(LogLevel.Trace, new EventId(-1, "Values Controller"), new { route = "Get" }, exception, 
-                       (argState, argException) => { 
-                return string.Format("{0} {1}", 
-                                     argState != null ? argState.ToString() : string.Empty,
-                                     argException != null ? argException.ToString() : string.Empty);
-            });
+            var message = "An error has ocurried route=Get";
+            var eventId = new EventId(-1, "Values Controller");
+
+            //You can log like this
+            logger.Log(LogLevel.Trace, eventId, message, exception);
+            //Or like this
+            logger.LogTrace(eventId, exception, message);
+
             return new string[] { "4", "2" };
         }
     }
