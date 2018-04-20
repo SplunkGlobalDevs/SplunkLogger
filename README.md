@@ -8,6 +8,7 @@ This is a C# .Net Core 2 ILogger implementation developed by **VTEX** developer 
   * **Http** loggers available to send data via **Raw** or **Json** routes
   * **Socket** loggers available to send data via **TCP** or **UDP**
 * Send **Http** events as batch (Improve **Splunk** *HEC* performance sending data as batch)
+* **ILoggerFormatter** that enable you to handle and formart your logs before send it to Splunk
 
 ### NuGet Package Status
 
@@ -163,8 +164,16 @@ public class ValuesController : Controller
     [HttpGet]
     public IEnumerable<string> Get()
     {
-        logger.LogCritical(new EventId(-1, "Values Controller"), new NotImplementedException(), "Error on GET api/values route");
-        return new string[] { "value1", "value2" };
+         var exception = new NotImplementedException();
+         var message = "An error has ocurried route=Get";
+         var eventId = new EventId(-1, "Values Controller");
+
+         //You can log like this
+         logger.Log(LogLevel.Trace, eventId, message, exception);
+         //Or like this
+         //logger.LogTrace(eventId, exception, message);
+
+         return new string[] { "4", "2" };
     }
 }
 ```
