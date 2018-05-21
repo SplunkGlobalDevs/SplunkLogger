@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Splunk.Configurations;
+using System.Linq;
 
 namespace Splunk.Providers
 {
@@ -52,6 +54,9 @@ namespace Splunk.Providers
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
             if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
                 httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
+
+            if(configuration.HecConfiguration.CustomHeaders != null && configuration.HecConfiguration.CustomHeaders.Count > 0)
+                configuration.HecConfiguration.CustomHeaders.ToList().ForEach(keyValuePair => httpClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value));
         }
 
         protected void DebugSplunkResponse(Task<HttpResponseMessage> responseMessageTask, string loggerType)

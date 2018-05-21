@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Splunk.Providers;
 using Splunk.Configurations;
+using System.Collections.Generic;
 
 namespace Splunk
 {
