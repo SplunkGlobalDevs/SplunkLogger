@@ -24,8 +24,8 @@ namespace Splunk.Providers
         /// </summary>
         /// <param name="configuration">Splunk configuration instance for HEC.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
-        public SplunkHECJsonLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
-            : base(configuration, "event")
+        public SplunkHECJsonLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null, Dictionary<string, string> customHeaders = null)
+            : base(configuration, "event", customHeaders)
         {
             this.loggerFormatter = loggerFormatter;
             loggers = new ConcurrentDictionary<string, ILogger>();

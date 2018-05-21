@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Splunk.Configurations;
+using System.Linq;
 
 namespace Splunk.Providers
 {
@@ -16,9 +18,9 @@ namespace Splunk.Providers
         protected ILogger loggerInstance;
         protected HttpClient httpClient;
 
-        public SplunkHECBaseProvider(SplunkLoggerConfiguration configuration, string endPointCustomization)
+        public SplunkHECBaseProvider(SplunkLoggerConfiguration configuration, string endPointCustomization, Dictionary<string, string> customHeaders = null)
         {
-            SetupHttpClient(configuration, endPointCustomization);
+            SetupHttpClient(configuration, endPointCustomization, customHeaders);
         }
 
         /// <summary>
@@ -39,7 +41,7 @@ namespace Splunk.Providers
         /// that the <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> was occupying.</remarks>
         public abstract void Dispose();
 
-        void SetupHttpClient(SplunkLoggerConfiguration configuration, string endPointCustomization)
+        void SetupHttpClient(SplunkLoggerConfiguration configuration, string endPointCustomization, Dictionary<string, string> customHeaders)
         {
             httpClient = new HttpClient
             {
@@ -52,6 +54,11 @@ namespace Splunk.Providers
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Splunk", configuration.HecConfiguration.Token);
             if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
                 httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
+
+            if(customHeaders != null && customHeaders.Count > 0)
+            {
+                customHeaders.ToList().ForEach(keyValuePair => httpClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value));
+            }
         }
 
         protected void DebugSplunkResponse(Task<HttpResponseMessage> responseMessageTask, string loggerType)

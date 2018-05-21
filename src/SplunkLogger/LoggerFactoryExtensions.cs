@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Splunk.Providers;
 using Splunk.Configurations;
+using System.Collections.Generic;
 
 namespace Splunk
 {
@@ -17,11 +18,11 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
+        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null, Dictionary<string, string> customHeaders = null)
         {
             if (formatter == null)
                 formatter = DefaultLoggerFormatter;
-            loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter));
+            loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter, customHeaders));
             return loggerFactory;
         }
 
@@ -31,11 +32,11 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
+        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null, Dictionary<string, string> customHeaders = null)
         {
             if (formatter == null)
                 formatter = DefaultLoggerFormatter;
-            loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter));
+            loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter, customHeaders));
             return loggerFactory;
         }
 
