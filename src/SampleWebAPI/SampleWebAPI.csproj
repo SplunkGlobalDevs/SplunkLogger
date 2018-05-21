@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ReleaseVersion>1.1.2</ReleaseVersion>
+    <ReleaseVersion>1.1.3</ReleaseVersion>
     <Description>Sample Web API project created to show how to use SplunkLogger library</Description>
     <RootNamespace>Splunk.SampleWebAPI</RootNamespace>
   </PropertyGroup>
