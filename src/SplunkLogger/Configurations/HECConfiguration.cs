@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Splunk.Configurations
 {
     /// <summary>
@@ -50,5 +52,11 @@ namespace Splunk.Configurations
         /// Gets or sets the token.
         /// </summary>
         public string Token { get; set; }
+
+        /// <summary>
+        /// Gets or set custom header to be applied at HEC calls.
+        /// </summary>
+        /// <value>The custom headers.</value>
+        public Dictionary<string, string> CustomHeaders { get; set; }
     }
 }

@@ -18,11 +18,11 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null, Dictionary<string, string> customHeaders = null)
+        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
         {
             if (formatter == null)
                 formatter = DefaultLoggerFormatter;
-            loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter, customHeaders));
+            loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter));
             return loggerFactory;
         }
 
@@ -32,11 +32,11 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null, Dictionary<string, string> customHeaders = null)
+        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
         {
             if (formatter == null)
                 formatter = DefaultLoggerFormatter;
-            loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter, customHeaders));
+            loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter));
             return loggerFactory;
         }
 

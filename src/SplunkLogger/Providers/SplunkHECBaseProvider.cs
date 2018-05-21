@@ -18,9 +18,9 @@ namespace Splunk.Providers
         protected ILogger loggerInstance;
         protected HttpClient httpClient;
 
-        public SplunkHECBaseProvider(SplunkLoggerConfiguration configuration, string endPointCustomization, Dictionary<string, string> customHeaders = null)
+        public SplunkHECBaseProvider(SplunkLoggerConfiguration configuration, string endPointCustomization)
         {
-            SetupHttpClient(configuration, endPointCustomization, customHeaders);
+            SetupHttpClient(configuration, endPointCustomization);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Splunk.Providers
         /// that the <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> was occupying.</remarks>
         public abstract void Dispose();
 
-        void SetupHttpClient(SplunkLoggerConfiguration configuration, string endPointCustomization, Dictionary<string, string> customHeaders)
+        void SetupHttpClient(SplunkLoggerConfiguration configuration, string endPointCustomization)
         {
             httpClient = new HttpClient
             {
@@ -55,10 +55,8 @@ namespace Splunk.Providers
             if (configuration.HecConfiguration.ChannelIdType == HECConfiguration.ChannelIdOption.RequestHeader)
                 httpClient.DefaultRequestHeaders.Add("x-splunk-request-channel", Guid.NewGuid().ToString());
 
-            if(customHeaders != null && customHeaders.Count > 0)
-            {
-                customHeaders.ToList().ForEach(keyValuePair => httpClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value));
-            }
+            if(configuration.HecConfiguration.CustomHeaders != null && configuration.HecConfiguration.CustomHeaders.Count > 0)
+                configuration.HecConfiguration.CustomHeaders.ToList().ForEach(keyValuePair => httpClient.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value));
         }
 
         protected void DebugSplunkResponse(Task<HttpResponseMessage> responseMessageTask, string loggerType)

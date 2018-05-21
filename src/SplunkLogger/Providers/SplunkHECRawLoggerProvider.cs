@@ -23,8 +23,8 @@ namespace Splunk.Providers
         /// </summary>
         /// <param name="configuration">Splunk configuration instance for HEC.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
-        public SplunkHECRawLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null, Dictionary<string, string> customHeaders = null)
-            :base(configuration, "raw", customHeaders)
+        public SplunkHECRawLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
+            :base(configuration, "raw")
         {
             this.loggerFormatter = loggerFormatter;
             loggers = new ConcurrentDictionary<string, ILogger>();
