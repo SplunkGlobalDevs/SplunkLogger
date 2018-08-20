@@ -35,13 +35,13 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
     //loggerFactory.AddHECRawSplunkLogger(splunkLoggerConfiguration);
     
     //Append Http Json logger
-    loggerFactory.AddHECJsonSplunkLogger(splunkConfiguration);
+    loggerFactory.AddHECJsonSplunkLogger(splunkLoggerConfiguration);
     
     //Append Socket TCP logger
-    //loggerFactory.AddTcpSplunkLogger(splunkConfiguration);
+    //loggerFactory.AddTcpSplunkLogger(splunkLoggerConfiguration);
     
     //Append Socket UDP logger
-    //loggerFactory.AddUdpSplunkLogger(splunkConfiguration);
+    //loggerFactory.AddUdpSplunkLogger(splunkLoggerConfiguration);
 }
 ```
 
