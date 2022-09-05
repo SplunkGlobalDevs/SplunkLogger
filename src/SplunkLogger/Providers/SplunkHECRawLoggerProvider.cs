@@ -12,6 +12,7 @@ namespace Splunk.Providers
     /// <summary>
     /// This class is used to provide a Splunk HEC Raw logger for each categoryName.
     /// </summary>
+    [ProviderAlias("Splunk")]
     public class SplunkHECRawLoggerProvider : SplunkHECBaseProvider, ILoggerProvider
     {
         readonly BatchManager batchManager;
