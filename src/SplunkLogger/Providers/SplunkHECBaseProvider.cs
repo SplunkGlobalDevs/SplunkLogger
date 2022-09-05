@@ -18,9 +18,9 @@ namespace Splunk.Providers
         protected ILogger loggerInstance;
         protected HttpClient httpClient;
 
-        public SplunkHECBaseProvider(SplunkLoggerConfiguration configuration, string endPointCustomization)
+        public SplunkHECBaseProvider(SplunkLoggerConfiguration configuration, string endPointCustomization, HttpMessageHandler httpMessageHandler = null)
         {
-            SetupHttpClient(configuration, endPointCustomization);
+            SetupHttpClient(configuration, endPointCustomization, httpMessageHandler);
         }
 
         /// <summary>
@@ -41,9 +41,9 @@ namespace Splunk.Providers
         /// that the <see cref="T:Splunk.Providers.SplunkHECJsonLoggerProvider"/> was occupying.</remarks>
         public abstract void Dispose();
 
-        void SetupHttpClient(SplunkLoggerConfiguration configuration, string endPointCustomization)
+        void SetupHttpClient(SplunkLoggerConfiguration configuration, string endPointCustomization, HttpMessageHandler httpMessageHandler)
         {
-            httpClient = new HttpClient
+            httpClient = new HttpClient(httpMessageHandler ?? new HttpClientHandler())
             {
                 BaseAddress = GetSplunkCollectorUrl(configuration, endPointCustomization)
             };

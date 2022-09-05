@@ -2,6 +2,7 @@
 using Splunk.Providers;
 using Splunk.Configurations;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace Splunk
 {
@@ -18,11 +19,12 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        public static ILoggerFactory AddHECRawSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null, HttpMessageHandler httpMessageHandler = null)
         {
             if (formatter == null)
                 formatter = DefaultLoggerFormatter;
-            loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter));
+            loggerFactory.AddProvider(new SplunkHECRawLoggerProvider(configuration, formatter, httpMessageHandler));
             return loggerFactory;
         }
 
@@ -32,11 +34,12 @@ namespace Splunk
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="formatter">Custom text formatter.</param>
-        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null)
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        public static ILoggerFactory AddHECJsonSplunkLogger(this ILoggerFactory loggerFactory, SplunkLoggerConfiguration configuration, ILoggerFormatter formatter = null, HttpMessageHandler httpMessageHandler = null)
         {
             if (formatter == null)
                 formatter = DefaultLoggerFormatter;
-            loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter));
+            loggerFactory.AddProvider(new SplunkHECJsonLoggerProvider(configuration, formatter, httpMessageHandler));
             return loggerFactory;
         }
 

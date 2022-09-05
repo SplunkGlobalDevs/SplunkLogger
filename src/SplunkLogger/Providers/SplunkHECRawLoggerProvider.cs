@@ -12,6 +12,7 @@ namespace Splunk.Providers
     /// <summary>
     /// This class is used to provide a Splunk HEC Raw logger for each categoryName.
     /// </summary>
+    [ProviderAlias("Splunk")]
     public class SplunkHECRawLoggerProvider : SplunkHECBaseProvider, ILoggerProvider
     {
         readonly BatchManager batchManager;
@@ -23,8 +24,9 @@ namespace Splunk.Providers
         /// </summary>
         /// <param name="configuration">Splunk configuration instance for HEC.</param>
         /// <param name="loggerFormatter">Formatter instance.</param>
-        public SplunkHECRawLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null)
-            :base(configuration, "raw")
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        public SplunkHECRawLoggerProvider(SplunkLoggerConfiguration configuration, ILoggerFormatter loggerFormatter = null, HttpMessageHandler httpMessageHandler = null)
+            :base(configuration, "raw", httpMessageHandler)
         {
             this.loggerFormatter = loggerFormatter;
             loggers = new ConcurrentDictionary<string, ILogger>();
